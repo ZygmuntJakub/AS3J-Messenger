@@ -1,4 +1,4 @@
-package com.as3j.messenger.as3jmessenger;
+package com.as3j.messenger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
