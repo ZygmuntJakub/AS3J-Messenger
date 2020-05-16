@@ -1,9 +1,10 @@
 package services;
 
+import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.entities.Chat;
-import com.as3j.messenger.entities.User;
-import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoUsersException;
+import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
 import com.as3j.messenger.repositories.ChatRepository;
+import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.impl.ChatServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,18 +24,17 @@ public class ChatServiceImplTest {
     private ChatServiceImpl chatService;
 
     @BeforeEach
-    private void setUp() {
+    void setUp() {
         chatRepository = mock(ChatRepository.class);
-        chatService = new ChatServiceImpl(chatRepository);
+        UserRepository userRepository = mock(UserRepository.class);
+        chatService = new ChatServiceImpl(chatRepository, userRepository);
     }
 
     @Test
-    private void shouldAddChat() {
+    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException {
         // given
-        User firstUser = new User("email@example.com", "P@ssw0rd", "someone", "http://example.com");
-        User secondUser = new User("anotheremail@example.com", "Pa$$w0rd", "someone-else", "http://example2.com");
-        Set<User> users = new HashSet<>(Arrays.asList(firstUser, secondUser));
-        Chat chat = new Chat("sampleChat", users);
+        Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
+        AddChatDto chat = new AddChatDto("sampleChat", users);
         // when
         chatService.add(chat);
         // then
@@ -42,20 +42,19 @@ public class ChatServiceImplTest {
     }
 
     @Test
-    private void shouldThrowExceptionWhenThereIsOnlyUser() {
+    void shouldThrowExceptionWhenThereIsOnlyMember() {
         // given
-        User onlyUser = new User("email@example.com", "P@ssw0rd", "someone", "http://example.com");
-        Set<User> users = new HashSet<>(Collections.singletonList(onlyUser));
-        Chat chat = new Chat("sampleChat", users);
+        Set<String> users = new HashSet<>(Collections.singletonList("onlyuser"));
+        AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
-        assertThrows(ChatMustHaveAtLeastTwoUsersException.class, () -> chatService.add(chat));
+        assertThrows(ChatMustHaveAtLeastTwoMembersException.class, () -> chatService.add(chat));
     }
 
     @Test
-    private void shouldThrowExceptionWhenThereIsNoUsers() {
+    void shouldThrowExceptionWhenThereIsNoMembers() {
         // given
-        Chat emptyChat = new Chat("sampleChat", new HashSet<>());
+        AddChatDto emptyChat = new AddChatDto("sampleChat", new HashSet<>());
         // then
-        assertThrows(ChatMustHaveAtLeastTwoUsersException.class, () -> chatService.add(emptyChat));
+        assertThrows(ChatMustHaveAtLeastTwoMembersException.class, () -> chatService.add(emptyChat));
     }
 }
