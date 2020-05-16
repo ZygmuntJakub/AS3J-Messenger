@@ -25,19 +25,13 @@ public class Chat implements Serializable {
             joinColumns = {@JoinColumn(name = "chat_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @OneToMany
     @JoinColumn(name = "chat_id")
     private Set<Message> messages = new HashSet<>();
 
     public Chat() {
-    }
-
-    public Chat(@NotNull @Size(min = 1, max = 50) String name,
-                Set<User> users) {
-        this.name = name;
-        this.users = users;
     }
 
     public Long getId() {

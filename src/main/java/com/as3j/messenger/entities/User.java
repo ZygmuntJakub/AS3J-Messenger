@@ -45,16 +45,6 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(@NotNull @Size(min = 3, max = 255) @Email String email,
-                @Size(min = 50, max = 60) String password,
-                @NotNull @Size(min = 3, max = 30) String username,
-                @NotNull String avatarUrl) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.avatarUrl = avatarUrl;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
