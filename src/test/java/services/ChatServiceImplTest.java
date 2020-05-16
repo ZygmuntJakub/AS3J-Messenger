@@ -3,6 +3,7 @@ package services;
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.entities.Chat;
 import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
+import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.repositories.ChatRepository;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.impl.ChatServiceImpl;
@@ -21,17 +22,18 @@ import static org.mockito.Mockito.*;
 public class ChatServiceImplTest {
 
     private ChatRepository chatRepository;
+    private UserRepository userRepository;
     private ChatServiceImpl chatService;
 
     @BeforeEach
     void setUp() {
         chatRepository = mock(ChatRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
+        userRepository = mock(UserRepository.class);
         chatService = new ChatServiceImpl(chatRepository, userRepository);
     }
 
     @Test
-    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException {
+    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         // given
         Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
         AddChatDto chat = new AddChatDto("sampleChat", users);
@@ -56,5 +58,15 @@ public class ChatServiceImplTest {
         AddChatDto emptyChat = new AddChatDto("sampleChat", new HashSet<>());
         // then
         assertThrows(ChatMustHaveAtLeastTwoMembersException.class, () -> chatService.add(emptyChat));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserIsNotFound() {
+        // given
+        Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
+        doReturn(null).when(userRepository).findByUsername(any(String.class));
+        AddChatDto chat = new AddChatDto("sampleChat", users);
+        // then
+        assertThrows(NoSuchUserException.class, () -> chatService.add(chat));
     }
 }

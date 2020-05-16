@@ -3,6 +3,7 @@ package controllers;
 import com.as3j.messenger.controllers.ChatController;
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
+import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.services.ChatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class ChatControllerTest {
     }
 
     @Test
-    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException {
+    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         // given
         Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
         AddChatDto dto = new AddChatDto("sampleChat", users);
@@ -38,7 +39,7 @@ public class ChatControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAddOperationFailes() throws ChatMustHaveAtLeastTwoMembersException {
+    void shouldThrowExceptionIfAddOperationFailes() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         // given
         doThrow(ChatMustHaveAtLeastTwoMembersException.class).when(chatService).add(any(AddChatDto.class));
         Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
