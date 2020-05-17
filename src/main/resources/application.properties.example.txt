@@ -1,0 +1,4 @@
+spring.h2.console.enabled=true
+jwt.secret=testKey
+jwt.lifeTime=5
+jwt.BCryptStrength=10

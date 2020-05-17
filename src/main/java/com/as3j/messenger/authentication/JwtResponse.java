@@ -8,14 +8,14 @@ public class JwtResponse implements Serializable {
 
     private static final long serialVersionUID = -8091879091924046845L;
 
-    private final String jwttoken;
+    private final String token;
 
-    public JwtResponse(String jwttoken) {
-        this.jwttoken = jwttoken;
+    public JwtResponse(String token) {
+        this.token = token;
     }
 
     public String getToken() {
-        return URLEncoder.encode(this.jwttoken, StandardCharsets.UTF_8);
+        return URLEncoder.encode(this.token, StandardCharsets.UTF_8);
     }
 
 }

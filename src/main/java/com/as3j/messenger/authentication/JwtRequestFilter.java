@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService jwtUserDetailsService;
+    
     private final JwtTokenUtil jwtTokenUtil;
 
     public JwtRequestFilter(@Qualifier("userDetailsServiceImpl") UserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil) {
@@ -35,6 +36,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String jwtToken = getJwtFromRequest(request);
         String username = null;
+
         if(jwtToken != null){
             username = jwtTokenUtil.getUsernameFromToken(jwtToken);
         }
