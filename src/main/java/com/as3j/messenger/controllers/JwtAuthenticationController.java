@@ -27,7 +27,7 @@ public class JwtAuthenticationController {
         this.userDetailsService = userDetailsService;
     }
 
-    @RequestMapping(value = "/login", consumes = "application/json")
+    @PostMapping(value = "/login", consumes = "application/json")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest credentials) throws Exception {
         Authentication authInfo = authenticate(credentials.getUsername(), credentials.getPassword());
         final String token = jwtTokenUtil.generateToken(String.valueOf(authInfo.getPrincipal()));

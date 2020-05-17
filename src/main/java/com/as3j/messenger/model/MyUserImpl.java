@@ -6,17 +6,17 @@ import com.as3j.messenger.model.entities.User;
 
 import java.util.Collection;
 
-public class MyUserDetails implements UserDetails {
+public class MyUserImpl implements UserDetails {
 
     private String email;
     private String password;
 
-    public MyUserDetails(User user) {
+    public MyUserImpl(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
     }
 
-    public MyUserDetails(String email, String password) {
+    public MyUserImpl(String email, String password) {
         this.email = email;
         this.password = password;
     }
