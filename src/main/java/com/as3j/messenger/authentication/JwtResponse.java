@@ -1,6 +1,8 @@
 package com.as3j.messenger.authentication;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class JwtResponse implements Serializable {
 
@@ -13,7 +15,7 @@ public class JwtResponse implements Serializable {
     }
 
     public String getToken() {
-        return this.jwttoken;
+        return URLEncoder.encode(this.jwttoken, StandardCharsets.UTF_8);
     }
 
 }

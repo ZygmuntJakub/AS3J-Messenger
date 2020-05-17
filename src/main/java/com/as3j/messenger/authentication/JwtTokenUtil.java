@@ -22,7 +22,7 @@ public class JwtTokenUtil implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
 
     @Value("${jwt.lifeTime}")
-    private int TOKEN_LIFETIME;
+    private int TOKEN_LIFETIME_IN_MIN;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -49,7 +49,7 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date(currentTime))
-                .setExpiration(new Date(currentTime + TimeUnit.MINUTES.toMillis(TOKEN_LIFETIME)))
+                .setExpiration(new Date(currentTime + TimeUnit.MINUTES.toMillis(TOKEN_LIFETIME_IN_MIN)))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }

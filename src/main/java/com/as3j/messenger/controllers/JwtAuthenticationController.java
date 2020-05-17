@@ -34,13 +34,12 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    private Authentication authenticate(String username, String password) throws Exception {
-        try {
+    @GetMapping(value = "/g")
+    public ResponseEntity<?> createAuthenticationToken() throws Exception {
+        return ResponseEntity.ok().build();
+    }
+
+    private Authentication authenticate(String username, String password){
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
     }
 }
