@@ -12,9 +12,8 @@ public class AddChatDto {
     @Size(min = 1, max = 50)
     private final String name;
 
-    @NotEmpty
     @Size(min = 2)
-    private final Set<UUID> usersUuid;
+    private final Set<@NotNull UUID> usersUuid;
 
     public AddChatDto(String name, Set<UUID> usersUuid) {
         this.name = name;
