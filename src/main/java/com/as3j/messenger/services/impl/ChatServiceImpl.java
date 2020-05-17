@@ -4,6 +4,7 @@ import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.entities.Chat;
 import com.as3j.messenger.entities.User;
 import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
+import com.as3j.messenger.exceptions.ChatWithSuchNameAlreadyExistsException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.repositories.ChatRepository;
 import com.as3j.messenger.repositories.UserRepository;
@@ -28,7 +29,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void add(AddChatDto dto) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
+    public void add(AddChatDto dto) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException,
+                                           ChatWithSuchNameAlreadyExistsException {
         if (dto.getUsersUuid().size() < 2) {
             throw new ChatMustHaveAtLeastTwoMembersException();
         }
@@ -39,6 +41,10 @@ public class ChatServiceImpl implements ChatService {
 
         if (users.contains(null)) {
             throw new NoSuchUserException();
+        }
+
+        if (chatRepository.findByName(dto.getName()) != null) {
+            throw new ChatWithSuchNameAlreadyExistsException();
         }
 
         Chat chat = new Chat();

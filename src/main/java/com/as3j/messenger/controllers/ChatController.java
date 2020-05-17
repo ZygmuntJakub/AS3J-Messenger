@@ -2,6 +2,7 @@ package com.as3j.messenger.controllers;
 
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
+import com.as3j.messenger.exceptions.ChatWithSuchNameAlreadyExistsException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class ChatController {
     }
 
     @PostMapping(consumes = "application/json")
-    public void addChat(@RequestBody @Valid AddChatDto chat) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
+    public void addChat(@RequestBody @Valid AddChatDto chat) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException,
+                                                                    ChatWithSuchNameAlreadyExistsException {
         chatService.add(chat);
     }
 }

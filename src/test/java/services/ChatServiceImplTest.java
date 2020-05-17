@@ -4,6 +4,7 @@ import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.entities.Chat;
 import com.as3j.messenger.entities.User;
 import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
+import com.as3j.messenger.exceptions.ChatWithSuchNameAlreadyExistsException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.repositories.ChatRepository;
 import com.as3j.messenger.repositories.UserRepository;
@@ -31,7 +32,7 @@ public class ChatServiceImplTest {
     }
 
     @Test
-    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
+    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException, ChatWithSuchNameAlreadyExistsException {
         // given
         Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
         doReturn(new User("email@example.com")).when(userRepository).findByUuid(any(UUID.class));
@@ -67,5 +68,16 @@ public class ChatServiceImplTest {
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
         assertThrows(NoSuchUserException.class, () -> chatService.add(chat));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenChatWithSuchNameAlreadyExists() {
+        // given
+        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        doReturn(new User("email@example.com")).when(userRepository).findByUuid(any(UUID.class));
+        doReturn(new Chat()).when(chatRepository).findByName(any(String.class));
+        AddChatDto chat = new AddChatDto("sampleChat", users);
+        // then
+        assertThrows(ChatWithSuchNameAlreadyExistsException.class, () -> chatService.add(chat));
     }
 }
