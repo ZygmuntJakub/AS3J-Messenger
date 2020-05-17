@@ -8,8 +8,8 @@ import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
 
     public UserDetailsImpl(User user) {
         this.email = user.getEmail();
