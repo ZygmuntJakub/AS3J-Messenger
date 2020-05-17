@@ -1,4 +1,4 @@
-package com.as3j.messenger.services;
+package com.as3j.messenger.services.impl;
 
 import com.as3j.messenger.model.MyUserDetails;
 import com.as3j.messenger.model.entities.User;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public MyUserDetailsService(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
