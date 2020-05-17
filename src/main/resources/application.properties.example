@@ -1,0 +1,6 @@
+spring.h2.console.enabled=true
+jwt.secret=testKey
+jwt.lifeTime=5
+jwt.BCryptStrength=10
+as3j.api.bucketName=as3j-messenger
+as3j.api.tempBucketName=as3j-messenger-tmp

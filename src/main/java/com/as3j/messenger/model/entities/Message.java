@@ -1,12 +1,11 @@
-package com.as3j.messenger.entities;
+package com.as3j.messenger.model.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-public class Message implements Serializable {
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
