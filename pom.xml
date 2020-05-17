@@ -8,7 +8,6 @@
         <version>2.2.7.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
     <groupId>com.as3j.Messenger</groupId>
     <artifactId>as3j-messenger</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -61,7 +60,6 @@
             </exclusions>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -70,5 +68,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
