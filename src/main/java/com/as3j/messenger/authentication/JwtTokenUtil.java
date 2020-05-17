@@ -44,15 +44,10 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
-    }
-
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    public String generateToken(String email) {
         long currentTime = System.currentTimeMillis();
         return Jwts.builder()
-                .setClaims(claims).setSubject(subject)
+                .setSubject(email)
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(currentTime + TimeUnit.MINUTES.toMillis(TOKEN_LIFETIME)))
                 .signWith(SignatureAlgorithm.HS256, secret)
