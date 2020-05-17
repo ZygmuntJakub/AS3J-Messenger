@@ -1,4 +1,4 @@
-package com.as3j.messenger.entities;
+package com.as3j.messenger.model.entities;
 
 import org.hibernate.annotations.Type;
 
@@ -6,13 +6,12 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-public class Chat implements Serializable {
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
