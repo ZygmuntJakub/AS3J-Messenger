@@ -1,4 +1,4 @@
-package com.as3j.messenger.entities;
+package com.as3j.messenger.model.entities;
 
 import org.hibernate.annotations.Type;
 
