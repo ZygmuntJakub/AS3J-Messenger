@@ -3,6 +3,7 @@ package com.as3j.messenger.entities;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -15,12 +16,12 @@ public class Chat implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Type(type="uuid-char")
+    @Type(type = "uuid-char")
     private UUID uuid;
 
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @ManyToMany
@@ -29,6 +30,8 @@ public class Chat implements Serializable {
             joinColumns = {@JoinColumn(name = "chat_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
+    @NotEmpty
+    @Size(min = 2)
     private Set<User> users = new HashSet<>();
 
     @OneToMany

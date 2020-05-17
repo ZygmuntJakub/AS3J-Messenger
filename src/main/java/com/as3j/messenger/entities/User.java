@@ -16,7 +16,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Type(type="uuid-char")
+    @Type(type = "uuid-char")
     private UUID uuid;
 
     @NotNull
@@ -31,7 +31,7 @@ public class User implements Serializable {
 
     @NotNull
     @Size(min = 3, max = 30)
-    @Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = false, length = 30)
     private String username;
 
     @NotNull

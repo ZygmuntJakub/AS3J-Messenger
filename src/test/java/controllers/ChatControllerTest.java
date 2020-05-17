@@ -2,8 +2,6 @@ package controllers;
 
 import com.as3j.messenger.controllers.ChatController;
 import com.as3j.messenger.dto.AddChatDto;
-import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
-import com.as3j.messenger.exceptions.ChatWithSuchNameAlreadyExistsException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.services.ChatService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ChatControllerTest {
@@ -24,15 +21,15 @@ public class ChatControllerTest {
     private ChatController chatController;
 
     @BeforeEach
-    private void setUp() {
+    void setUp() {
         chatService = mock(ChatService.class);
         chatController = new ChatController(chatService);
     }
 
     @Test
-    void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException, ChatWithSuchNameAlreadyExistsException {
+    void shouldAddChat() throws NoSuchUserException {
         // given
-        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // when
         chatController.addChat(dto);
@@ -41,12 +38,12 @@ public class ChatControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAddOperationFails() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException, ChatWithSuchNameAlreadyExistsException {
+    void shouldThrowExceptionIfAddOperationFails() throws NoSuchUserException {
         // given
-        doThrow(ChatMustHaveAtLeastTwoMembersException.class).when(chatService).add(any(AddChatDto.class));
-        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        doThrow(NoSuchUserException.class).when(chatService).add(any(AddChatDto.class));
+        Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // then
-        assertThrows(ChatMustHaveAtLeastTwoMembersException.class, () -> chatController.addChat(dto));
+        assertThrows(NoSuchUserException.class, () -> chatController.addChat(dto));
     }
 }

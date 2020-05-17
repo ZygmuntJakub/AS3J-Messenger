@@ -4,6 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
+import java.util.UUID;
 
 public class AddChatDto {
 
@@ -12,9 +13,10 @@ public class AddChatDto {
     private final String name;
 
     @NotEmpty
-    private final Set<@Size(min = 36, max = 36) String> usersUuid;
+    @Size(min = 2)
+    private final Set<UUID> usersUuid;
 
-    public AddChatDto(String name, Set<String> usersUuid) {
+    public AddChatDto(String name, Set<UUID> usersUuid) {
         this.name = name;
         this.usersUuid = usersUuid;
     }
@@ -23,7 +25,7 @@ public class AddChatDto {
         return name;
     }
 
-    public Set<String> getUsersUuid() {
+    public Set<UUID> getUsersUuid() {
         return usersUuid;
     }
 }
