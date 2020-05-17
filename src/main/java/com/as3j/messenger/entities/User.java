@@ -1,18 +1,23 @@
 package com.as3j.messenger.entities;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Type(type = "uuid-char")
+    private UUID uuid;
 
     @NotNull
     @Size(min = 3, max = 255)
@@ -26,11 +31,11 @@ public class User implements Serializable {
 
     @NotNull
     @Size(min = 3, max = 30)
-    @Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = false, length = 30)
     private String username;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "avatar_url")
     private String avatarUrl;
 
     @ManyToMany
@@ -39,13 +44,17 @@ public class User implements Serializable {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "blacklist_user_id")}
     )
-    private Set<User> blackList;
+    private Set<User> blackList = new HashSet<>();
 
     public User() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User(@NotNull @Size(min = 3, max = 255) @Email String email) {
+        this.email = email;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public String getEmail() {
