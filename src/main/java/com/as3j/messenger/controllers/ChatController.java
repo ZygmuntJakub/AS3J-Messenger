@@ -24,7 +24,6 @@ public class ChatController {
     }
 
     @PostMapping(consumes = "application/json")
-    @RequestMapping("/")
     public void addChat(@RequestBody @Valid AddChatDto chat) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         chatService.add(chat);
     }
