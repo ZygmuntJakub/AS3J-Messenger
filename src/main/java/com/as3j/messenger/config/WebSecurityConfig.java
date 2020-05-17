@@ -2,7 +2,7 @@ package com.as3j.messenger.config;
 
 import com.as3j.messenger.authentication.JwtAuthenticationEntryPoint;
 import com.as3j.messenger.authentication.JwtRequestFilter;
-import com.as3j.messenger.services.impl.UserDetailsServiceImpl;
+import com.as3j.messenger.authentication.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

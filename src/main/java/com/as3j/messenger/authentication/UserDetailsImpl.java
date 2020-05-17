@@ -1,22 +1,22 @@
-package com.as3j.messenger.model;
+package com.as3j.messenger.authentication;
 
+import com.as3j.messenger.model.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.as3j.messenger.model.entities.User;
 
 import java.util.Collection;
 
-public class MyUserImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private String email;
     private String password;
 
-    public MyUserImpl(User user) {
+    public UserDetailsImpl(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
     }
 
-    public MyUserImpl(String email, String password) {
+    public UserDetailsImpl(String email, String password) {
         this.email = email;
         this.password = password;
     }

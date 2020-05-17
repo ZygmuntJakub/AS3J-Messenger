@@ -1,18 +1,15 @@
 package com.as3j.messenger.authentication;
 
-import javax.validation.constraints.*;
-import java.io.Serializable;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-public class JwtRequest implements Serializable {
-
-    private static final long serialVersionUID = 5926468583005150707L;
-
+public class JwtRequest {
     @NotBlank
     @Email
     private String email;
 
     @NotBlank
-    @Size(min = 8)
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     private String password;
 

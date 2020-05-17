@@ -1,12 +1,9 @@
 package com.as3j.messenger.authentication;
 
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class JwtResponse implements Serializable {
-
-    private static final long serialVersionUID = -8091879091924046845L;
+public class JwtResponse {
 
     private final String token;
 
