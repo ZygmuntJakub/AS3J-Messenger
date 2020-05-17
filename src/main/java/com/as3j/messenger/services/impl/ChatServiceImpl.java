@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,18 +29,21 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void add(AddChatDto dto) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
-        if (dto.getUsers().size() < 2) {
+        if (dto.getUsersUuid().size() < 2) {
             throw new ChatMustHaveAtLeastTwoMembersException();
         }
 
-        Set<User> users = dto.getUsers().stream().map(userRepository::findByUsername).collect(Collectors.toSet());
+        Set<User> users = dto.getUsersUuid().stream()
+                .map(uuid -> userRepository.findByUuid(UUID.fromString(uuid)))
+                .collect(Collectors.toSet());
+
         if (users.contains(null)) {
             throw new NoSuchUserException();
         }
 
         Chat chat = new Chat();
         chat.setName(dto.getName());
-        chat.setUsers(dto.getUsers().stream().map(userRepository::findByUsername).collect(Collectors.toSet()));
+        chat.setUsers(users);
 
         chatRepository.save(chat);
     }

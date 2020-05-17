@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +31,7 @@ public class ChatControllerTest {
     @Test
     void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         // given
-        Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
+        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // when
         chatController.addChat(dto);
@@ -39,10 +40,10 @@ public class ChatControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAddOperationFailes() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
+    void shouldThrowExceptionIfAddOperationFails() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         // given
         doThrow(ChatMustHaveAtLeastTwoMembersException.class).when(chatService).add(any(AddChatDto.class));
-        Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
+        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // then
         assertThrows(ChatMustHaveAtLeastTwoMembersException.class, () -> chatController.addChat(dto));

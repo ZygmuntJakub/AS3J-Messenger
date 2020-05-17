@@ -2,6 +2,7 @@ package services;
 
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.entities.Chat;
+import com.as3j.messenger.entities.User;
 import com.as3j.messenger.exceptions.ChatMustHaveAtLeastTwoMembersException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.repositories.ChatRepository;
@@ -10,10 +11,7 @@ import com.as3j.messenger.services.impl.ChatServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +33,8 @@ public class ChatServiceImplTest {
     @Test
     void shouldAddChat() throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         // given
-        Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
+        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        doReturn(new User("email@example.com")).when(userRepository).findByUuid(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // when
         chatService.add(chat);
@@ -44,16 +43,16 @@ public class ChatServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenThereIsOnlyMember() {
+    void shouldThrowExceptionWhenThereIsOnlyOneMember() {
         // given
-        Set<String> users = new HashSet<>(Collections.singletonList("onlyuser"));
+        Set<String> users = new HashSet<>(Collections.singletonList(UUID.randomUUID().toString()));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
         assertThrows(ChatMustHaveAtLeastTwoMembersException.class, () -> chatService.add(chat));
     }
 
     @Test
-    void shouldThrowExceptionWhenThereIsNoMembers() {
+    void shouldThrowExceptionWhenThereAreNoMembers() {
         // given
         AddChatDto emptyChat = new AddChatDto("sampleChat", new HashSet<>());
         // then
@@ -63,8 +62,8 @@ public class ChatServiceImplTest {
     @Test
     void shouldThrowExceptionWhenUserIsNotFound() {
         // given
-        Set<String> users = new HashSet<>(Arrays.asList("someone", "someone-else"));
-        doReturn(null).when(userRepository).findByUsername(any(String.class));
+        Set<String> users = new HashSet<>(Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        doReturn(null).when(userRepository).findByUuid(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
         assertThrows(NoSuchUserException.class, () -> chatService.add(chat));

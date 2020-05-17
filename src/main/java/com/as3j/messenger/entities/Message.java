@@ -2,7 +2,6 @@ package com.as3j.messenger.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -27,8 +26,8 @@ public class Message implements Serializable {
     private User user;
 
     @NotNull
-    @Size(min = 1, max = 500)
-    @Column(nullable = false, length = 500)
+    @Lob
+    @Column(nullable = false)
     private String content;
 
     public Message() {

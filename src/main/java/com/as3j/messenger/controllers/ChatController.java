@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
-@RequestMapping("chat")
+@RequestMapping("chats")
 public class ChatController {
 
     private final ChatService chatService;
@@ -22,8 +24,8 @@ public class ChatController {
     }
 
     @PostMapping(consumes = "application/json")
-    @RequestMapping("add")
-    public void addChat(@RequestBody AddChatDto chat) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
+    @RequestMapping("/")
+    public void addChat(@RequestBody @Valid AddChatDto chat) throws ChatMustHaveAtLeastTwoMembersException, NoSuchUserException {
         chatService.add(chat);
     }
 }
