@@ -1,10 +1,7 @@
 package com.as3j.messenger.controllers;
 
 import com.as3j.messenger.dto.BlackListUserDto;
-import com.as3j.messenger.exceptions.AttemptToBlacklistYourselfException;
-import com.as3j.messenger.exceptions.NoSuchUserException;
-import com.as3j.messenger.exceptions.UserAlreadyBlacklistedException;
-import com.as3j.messenger.exceptions.UserNotBlacklistedException;
+import com.as3j.messenger.exceptions.*;
 import com.as3j.messenger.services.BlackListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,18 +24,18 @@ public class BlackListController {
     }
 
     @GetMapping()
-    public Set<BlackListUserDto> getBlackList() throws NoSuchUserException {
+    public Set<BlackListUserDto> getBlackList() throws NoSuchUserException, UnauthorizedUserException {
         return blackListService.getBlackList().stream().map(BlackListUserDto::fromUserEntity)
                 .collect(Collectors.toSet());
     }
 
     @PostMapping(value="add")
-    public void addToBlackList(@RequestParam("user") @NotNull UUID userId) throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException {
+    public void addToBlackList(@RequestParam("user") @NotNull UUID userId) throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException, UnauthorizedUserException {
         blackListService.addToBlackList(userId);
     }
 
     @PostMapping(value="remove")
-    public void removeFromBlackList(@RequestParam("user") @NotNull UUID userId) throws NoSuchUserException, UserNotBlacklistedException {
+    public void removeFromBlackList(@RequestParam("user") @NotNull UUID userId) throws NoSuchUserException, UserNotBlacklistedException, UnauthorizedUserException {
         blackListService.removeFromBlackList(userId);
     }
 }

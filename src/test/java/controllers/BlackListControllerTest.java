@@ -1,10 +1,7 @@
 package controllers;
 
 import com.as3j.messenger.controllers.BlackListController;
-import com.as3j.messenger.exceptions.AttemptToBlacklistYourselfException;
-import com.as3j.messenger.exceptions.NoSuchUserException;
-import com.as3j.messenger.exceptions.UserAlreadyBlacklistedException;
-import com.as3j.messenger.exceptions.UserNotBlacklistedException;
+import com.as3j.messenger.exceptions.*;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.BlackListService;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +31,7 @@ class BlackListControllerTest {
     }
 
     @Test
-    void shouldGetBlackListTest() throws NoSuchUserException {
+    void shouldGetBlackListTest() throws NoSuchUserException, UnauthorizedUserException {
         //given
         Set<User> blackList = Set.of(new User("test@example.com"));
         doReturn(blackList).when(blackListService).getBlackList();
@@ -47,7 +44,7 @@ class BlackListControllerTest {
     }
 
     @Test
-    void shouldAddToBlackListTest() throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException {
+    void shouldAddToBlackListTest() throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException, UnauthorizedUserException {
         //when
         UUID userId = UUID.randomUUID();
         blackListController.addToBlackList(userId);
@@ -56,14 +53,14 @@ class BlackListControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenAddOperationFails() throws UserAlreadyBlacklistedException, NoSuchUserException, AttemptToBlacklistYourselfException {
+    void shouldThrowExceptionWhenAddOperationFails() throws UserAlreadyBlacklistedException, NoSuchUserException, AttemptToBlacklistYourselfException, UnauthorizedUserException {
         doThrow(UserAlreadyBlacklistedException.class).when(blackListService).addToBlackList(any(UUID.class));
         //then
         assertThrows(UserAlreadyBlacklistedException.class, () -> blackListController.addToBlackList(UUID.randomUUID()));
     }
 
     @Test
-    void shouldRemoveFromBlackListTest() throws NoSuchUserException, UserNotBlacklistedException {
+    void shouldRemoveFromBlackListTest() throws NoSuchUserException, UserNotBlacklistedException, UnauthorizedUserException {
         //when
         UUID userId = UUID.randomUUID();
         blackListController.removeFromBlackList(userId);
@@ -72,7 +69,7 @@ class BlackListControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenRemoveOperationFails() throws NoSuchUserException, UserNotBlacklistedException {
+    void shouldThrowExceptionWhenRemoveOperationFails() throws NoSuchUserException, UserNotBlacklistedException, UnauthorizedUserException {
         //given
         doThrow(UserNotBlacklistedException.class).when(blackListService).removeFromBlackList(any(UUID.class));
         //then

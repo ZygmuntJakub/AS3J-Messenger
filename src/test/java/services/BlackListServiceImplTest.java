@@ -1,9 +1,6 @@
 package services;
 
-import com.as3j.messenger.exceptions.AttemptToBlacklistYourselfException;
-import com.as3j.messenger.exceptions.NoSuchUserException;
-import com.as3j.messenger.exceptions.UserAlreadyBlacklistedException;
-import com.as3j.messenger.exceptions.UserNotBlacklistedException;
+import com.as3j.messenger.exceptions.*;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.BlackListService;
@@ -40,7 +37,7 @@ class BlackListServiceImplTest {
     }
 
     @Test
-    void shouldGetBlackListTest() throws NoSuchUserException {
+    void shouldGetBlackListTest() throws NoSuchUserException, UnauthorizedUserException {
         //when
         Set<User> blackList = blackListService.getBlackList();
         //then
@@ -49,7 +46,7 @@ class BlackListServiceImplTest {
     }
 
     @Test
-    void shouldAddToBlackListTest() throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException {
+    void shouldAddToBlackListTest() throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException, UnauthorizedUserException {
         //given
         User userToBlacklist = new User("test4@example.com");
         doReturn(Optional.of(userToBlacklist)).when(userRepository).findById(any(UUID.class));
@@ -90,7 +87,7 @@ class BlackListServiceImplTest {
     }
 
     @Test
-    void shouldRemoveFromBlackListTest() throws NoSuchUserException, UserNotBlacklistedException {
+    void shouldRemoveFromBlackListTest() throws NoSuchUserException, UserNotBlacklistedException, UnauthorizedUserException {
         //given
         User userToRemove = new User("test4@example.com");
         loggedUser.getBlackList().add(userToRemove);
