@@ -23,8 +23,8 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping(path = "/photos", consumes = "multipart/form-data")
-    public SingleValueDTO<UUID> uploadPhoto(@RequestParam("file")MultipartFile file) throws ErrorProcessingImageException {
+    @PostMapping(path = "/avatars", consumes = "multipart/form-data")
+    public SingleValueDTO<UUID> uploadPhoto(@RequestParam("file") MultipartFile file) throws ErrorProcessingImageException {
         return SingleValueDTO.of(fileService.uploadTempPhoto(file));
     }
 }

@@ -10,6 +10,7 @@ import com.as3j.messenger.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void add(AddChatDto dto) throws NoSuchUserException {
         Set<User> users = dto.getUsersUuid().stream()
-                .map(userRepository::findByUuid)
+                .map(id -> userRepository.findById(id).orElse(null))
                 .collect(Collectors.toSet());
 
         if (users.contains(null)) {

@@ -34,8 +34,8 @@ public class User {
     private String username;
 
     @NotNull
-    @Column(name = "avatar_url")
-    private String avatarUrl;
+    @Column(name = "avatar")
+    private Boolean avatarPresent;
 
     @ManyToMany
     @JoinTable(
@@ -80,12 +80,12 @@ public class User {
         this.username = username;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public Boolean getAvatarPresent() {
+        return avatarPresent;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatarPresent(Boolean avatarPresent) {
+        this.avatarPresent = avatarPresent;
     }
 
     public Set<User> getBlackList() {

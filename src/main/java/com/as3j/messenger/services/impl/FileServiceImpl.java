@@ -2,10 +2,14 @@ package com.as3j.messenger.services.impl;
 
 import com.as3j.messenger.common.ApiConfig;
 import com.as3j.messenger.exceptions.ErrorProcessingImageException;
+import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.services.FileService;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +24,7 @@ import java.util.UUID;
 
 @Service
 public class FileServiceImpl implements FileService {
+    Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
     private Storage storage;
     private ApiConfig apiConfig;
 
@@ -36,6 +41,25 @@ public class FileServiceImpl implements FileService {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         storage.create(blobInfo, scaleImage(file));
         return id;
+    }
+
+    @Override
+    public void updatePhoto(UUID tempPhotoId, UUID userId) throws NoSuchFileException {
+        BlobId sourceBlobId = BlobId.of(apiConfig.getTempBucketName(), tempPhotoId.toString()+".png");
+        BlobId targetBlobId = BlobId.of(apiConfig.getBucketName(), userId.toString()+".png");
+        Storage.CopyRequest copyRequest = Storage.CopyRequest.newBuilder()
+                .setSource(sourceBlobId)
+                .setTarget(targetBlobId)
+                .build();
+        try {
+            storage.copy(copyRequest);
+        } catch(StorageException exception) {
+            if (exception.getCode() == 404) {
+                throw new NoSuchFileException();
+            } else {
+                throw exception;
+            }
+        }
     }
 
     private byte[] scaleImage(MultipartFile file) throws ErrorProcessingImageException {
