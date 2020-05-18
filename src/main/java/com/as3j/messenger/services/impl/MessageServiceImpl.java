@@ -1,6 +1,5 @@
 package com.as3j.messenger.services.impl;
 
-import com.as3j.messenger.dto.SendMessageDto;
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.model.entities.Chat;
@@ -11,6 +10,8 @@ import com.as3j.messenger.repositories.MessageRepository;
 import com.as3j.messenger.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -25,19 +26,19 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(SendMessageDto messageDto, User author) throws NoSuchChatException,
+    public void sendMessage(UUID chatUuid, User author, String content) throws NoSuchChatException,
             MessageAuthorIsNotMemberOfChatException {
-        Chat chat = chatRepository.findById(messageDto.getChatUuid())
+        Chat chat = chatRepository.findById(chatUuid)
                 .orElseThrow(NoSuchChatException::new);
 
-        if (chat.getUsers().stream().noneMatch(user -> user.equals(author))) {
+        if (!chat.getUsers().contains(author)) {
             throw new MessageAuthorIsNotMemberOfChatException();
         }
 
         Message message = new Message();
         message.setChat(chat);
         message.setUser(author);
-        message.setContent(messageDto.getContent());
+        message.setContent(content);
 
         messageRepository.save(message);
     }

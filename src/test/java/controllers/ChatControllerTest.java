@@ -17,13 +17,13 @@ import static org.mockito.Mockito.*;
 
 public class ChatControllerTest {
 
+    private ChatController chatController;
     private ChatService chatService;
-    private ChatController sut;
 
     @BeforeEach
     void setUp() {
         chatService = mock(ChatService.class);
-        sut = new ChatController(chatService);
+        chatController = new ChatController(chatService);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class ChatControllerTest {
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // when
-        sut.addChat(dto);
+        chatController.addChat(dto);
         // then
         verify(chatService, times(1)).add(any(AddChatDto.class));
     }
@@ -44,6 +44,6 @@ public class ChatControllerTest {
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // then
-        assertThrows(NoSuchUserException.class, () -> sut.addChat(dto));
+        assertThrows(NoSuchUserException.class, () -> chatController.addChat(dto));
     }
 }
