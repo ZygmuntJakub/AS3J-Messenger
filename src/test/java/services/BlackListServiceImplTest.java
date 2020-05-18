@@ -7,9 +7,6 @@ import com.as3j.messenger.services.BlackListService;
 import com.as3j.messenger.services.impl.BlackListServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
@@ -17,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@WithMockUser(username = "test@example.com")
 class BlackListServiceImplTest {
 
     private UserRepository userRepository;
@@ -32,29 +27,18 @@ class BlackListServiceImplTest {
         loggedUser = new User("test@example.com");
         loggedUser.getBlackList().addAll(Set.of(new User("test2@example.com"),
                 new User("test3@example.com")));
-
-        doReturn(Optional.of(loggedUser)).when(userRepository).findByEmail("test@example.com");
     }
 
     @Test
-    void shouldGetBlackListTest() throws NoSuchUserException, UnauthorizedUserException {
-        //when
-        Set<User> blackList = blackListService.getBlackList();
-        //then
-        assertIterableEquals(loggedUser.getBlackList(), blackList);
-        verify(userRepository, times(1)).findByEmail("test@example.com");
-    }
-
-    @Test
-    void shouldAddToBlackListTest() throws NoSuchUserException, UserAlreadyBlacklistedException, AttemptToBlacklistYourselfException, UnauthorizedUserException {
+    void shouldAddToBlackList() throws NoSuchUserException, UserAlreadyBlacklistedException,
+            AttemptToBlacklistYourselfException {
         //given
         User userToBlacklist = new User("test4@example.com");
         doReturn(Optional.of(userToBlacklist)).when(userRepository).findById(any(UUID.class));
         //when
-        blackListService.addToBlackList(UUID.randomUUID());
+        blackListService.addToBlackList(UUID.randomUUID(), loggedUser);
         //then
         assertTrue(loggedUser.getBlackList().contains(userToBlacklist));
-        verify(userRepository, times(1)).findByEmail("test@example.com");
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(userRepository, times(1)).save(loggedUser);
     }
@@ -64,7 +48,7 @@ class BlackListServiceImplTest {
         //given
         doReturn(Optional.empty()).when(userRepository).findById(any(UUID.class));
         //then
-        assertThrows(NoSuchUserException.class, () -> blackListService.addToBlackList(UUID.randomUUID()));
+        assertThrows(NoSuchUserException.class, () -> blackListService.addToBlackList(UUID.randomUUID(), loggedUser));
     }
 
     @Test
@@ -75,7 +59,8 @@ class BlackListServiceImplTest {
         assertTrue(loggedUser.getBlackList().contains(userToBlackList));
         doReturn(Optional.of(userToBlackList)).when(userRepository).findById(any(UUID.class));
         //then
-        assertThrows(UserAlreadyBlacklistedException.class, () -> blackListService.addToBlackList(UUID.randomUUID()));
+        assertThrows(UserAlreadyBlacklistedException.class,
+                () -> blackListService.addToBlackList(UUID.randomUUID(), loggedUser));
     }
 
     @Test
@@ -83,21 +68,21 @@ class BlackListServiceImplTest {
         //given
         doReturn(Optional.of(loggedUser)).when(userRepository).findById(any(UUID.class));
         //then
-        assertThrows(AttemptToBlacklistYourselfException.class, () -> blackListService.addToBlackList(UUID.randomUUID()));
+        assertThrows(AttemptToBlacklistYourselfException.class,
+                () -> blackListService.addToBlackList(UUID.randomUUID(), loggedUser));
     }
 
     @Test
-    void shouldRemoveFromBlackListTest() throws NoSuchUserException, UserNotBlacklistedException, UnauthorizedUserException {
+    void shouldRemoveFromBlackList() throws NoSuchUserException, UserNotBlacklistedException {
         //given
         User userToRemove = new User("test4@example.com");
         loggedUser.getBlackList().add(userToRemove);
         assertTrue(loggedUser.getBlackList().contains(userToRemove));
         doReturn(Optional.of(userToRemove)).when(userRepository).findById(any(UUID.class));
         //when
-        blackListService.removeFromBlackList(UUID.randomUUID());
+        blackListService.removeFromBlackList(UUID.randomUUID(), loggedUser);
         //verify
         assertFalse(loggedUser.getBlackList().contains(userToRemove));
-        verify(userRepository, times(1)).findByEmail("test@example.com");
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(userRepository, times(1)).save(loggedUser);
     }
@@ -109,7 +94,8 @@ class BlackListServiceImplTest {
         assertFalse(loggedUser.getBlackList().contains(userToBlackList));
         doReturn(Optional.of(userToBlackList)).when(userRepository).findById(any(UUID.class));
         //then
-        assertThrows(UserNotBlacklistedException.class, () -> blackListService.removeFromBlackList(UUID.randomUUID()));
+        assertThrows(UserNotBlacklistedException.class,
+                () -> blackListService.removeFromBlackList(UUID.randomUUID(), loggedUser));
     }
 
     @Test
@@ -117,6 +103,7 @@ class BlackListServiceImplTest {
         //given
         doReturn(Optional.empty()).when(userRepository).findById(any(UUID.class));
         //then
-        assertThrows(NoSuchUserException.class, () -> blackListService.removeFromBlackList(UUID.randomUUID()));
+        assertThrows(NoSuchUserException.class,
+                () -> blackListService.removeFromBlackList(UUID.randomUUID(), loggedUser));
     }
 }
