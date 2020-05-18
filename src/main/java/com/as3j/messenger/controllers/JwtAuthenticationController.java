@@ -4,6 +4,7 @@ package com.as3j.messenger.controllers;
 import com.as3j.messenger.authentication.JwtRequest;
 import com.as3j.messenger.authentication.JwtResponse;
 import com.as3j.messenger.authentication.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ public class JwtAuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
     public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;

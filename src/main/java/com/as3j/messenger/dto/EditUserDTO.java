@@ -3,6 +3,7 @@ package com.as3j.messenger.dto;
 import com.as3j.messenger.model.entities.User;
 
 import javax.validation.constraints.Size;
+import java.util.Optional;
 import java.util.UUID;
 
 public class EditUserDTO {
@@ -27,8 +28,8 @@ public class EditUserDTO {
         this.username = username;
     }
 
-    public UUID getPhotoID() {
-        return photoID;
+    public Optional<UUID> getPhotoID() {
+        return Optional.ofNullable(photoID);
     }
 
     public void setPhotoID(UUID photoID) {

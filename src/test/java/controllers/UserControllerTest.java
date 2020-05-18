@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UserControllerTest {
@@ -44,7 +44,7 @@ public class UserControllerTest {
         verify(userService, times(1)).update(any(User.class));
         verify(fileService, never()).updatePhoto(any(UUID.class), any(UUID.class));
         assertEquals("test2", user.getUsername());
-        assertEquals(false, user.getAvatarPresent());
+        assertFalse(user.getAvatarPresent());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class UserControllerTest {
         verify(userService, times(1)).update(any(User.class));
         verify(fileService, times(1)).updatePhoto(any(UUID.class), any(UUID.class));
         assertEquals("test", user.getUsername());
-        assertEquals(true, user.getAvatarPresent());
+        assertTrue(user.getAvatarPresent());
     }
 
     @Test
@@ -80,6 +80,6 @@ public class UserControllerTest {
         verify(userService, times(1)).update(any(User.class));
         verify(fileService, times(1)).updatePhoto(any(UUID.class), any(UUID.class));
         assertEquals("test2", user.getUsername());
-        assertEquals(true, user.getAvatarPresent());
+        assertTrue(user.getAvatarPresent());
     }
 }

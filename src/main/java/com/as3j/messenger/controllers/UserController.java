@@ -7,6 +7,7 @@ import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.FileService;
 import com.as3j.messenger.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class UserController {
     private final UserService userService;
     private final FileService fileService;
 
+    @Autowired
     public UserController(UserService userService, FileService fileService) {
         this.userService = userService;
         this.fileService = fileService;
@@ -27,11 +29,12 @@ public class UserController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editUser(@RequestBody @Valid EditUserDTO editUserDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) throws NoSuchUserException, NoSuchFileException {
+    public void editUser(@RequestBody @Valid EditUserDTO editUserDTO, @AuthenticationPrincipal UserDetailsImpl userDetails)
+            throws NoSuchUserException, NoSuchFileException {
         User user = userService.getByEmail(userDetails.getUsername());
         editUserDTO.patch(user);
-        if(editUserDTO.getPhotoID() != null) {
-            fileService.updatePhoto(editUserDTO.getPhotoID(), user.getUuid());
+        if(editUserDTO.getPhotoID().isPresent()) {
+            fileService.updatePhoto(editUserDTO.getPhotoID().get(), user.getUuid());
         }
         userService.update(user);
     }

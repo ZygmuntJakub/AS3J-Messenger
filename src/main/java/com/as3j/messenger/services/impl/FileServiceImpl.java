@@ -8,9 +8,8 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,9 +23,11 @@ import java.util.UUID;
 
 @Service
 public class FileServiceImpl implements FileService {
-    Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
     private final Storage storage;
     private final ApiConfig apiConfig;
+
+    @Value("${as3j.files.maxAvatarSize}")
+    private int maxAvatarSize;
 
     @Autowired
     public FileServiceImpl(Storage storage, ApiConfig apiConfig) {
@@ -66,7 +67,8 @@ public class FileServiceImpl implements FileService {
         try(InputStream in = file.getInputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             BufferedImage image = ImageIO.read(in);
-            Dimension dimensions = getScaledDimension(new Dimension(image.getWidth(), image.getHeight()), new Dimension(400, 400));
+            Dimension dimensions = getScaledDimension(new Dimension(image.getWidth(), image.getHeight()),
+                    new Dimension(maxAvatarSize, maxAvatarSize));
             Image img = image.getScaledInstance(dimensions.width, dimensions.height, Image.SCALE_SMOOTH);
             BufferedImage scaledImage = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = scaledImage.createGraphics();

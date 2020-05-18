@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
@@ -32,6 +33,7 @@ public class FileServiceImplTest {
         storage = mock(Storage.class);
         apiConfig = mock(ApiConfig.class);
         fileService = new FileServiceImpl(storage, apiConfig);
+        ReflectionTestUtils.setField(fileService, "maxAvatarSize", 400);
     }
 
     @Test

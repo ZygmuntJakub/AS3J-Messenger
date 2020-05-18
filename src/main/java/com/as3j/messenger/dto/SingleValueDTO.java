@@ -1,6 +1,10 @@
 package com.as3j.messenger.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class SingleValueDTO<T> {
+
+    @NotNull
     private T value;
 
     public SingleValueDTO(T value) {

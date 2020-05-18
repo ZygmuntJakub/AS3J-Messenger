@@ -5,3 +5,4 @@ jwt.lifeTime=5
 jwt.BCryptStrength=10
 as3j.api.bucketName=as3j-messenger
 as3j.api.tempBucketName=as3j-messenger-tmp
+as3j.files.maxAvatarSize=400

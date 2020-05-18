@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <swagger.version>1.3.9</swagger.version>
     </properties>
 
     <dependencyManagement>
@@ -91,7 +92,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.3.9</version>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -101,6 +102,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
     <build>

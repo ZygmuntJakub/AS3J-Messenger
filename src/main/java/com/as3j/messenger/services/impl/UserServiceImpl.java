@@ -4,6 +4,7 @@ import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,6 +14,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

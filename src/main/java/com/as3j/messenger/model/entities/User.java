@@ -33,9 +33,8 @@ public class User {
     @Column(nullable = false, length = 30)
     private String username;
 
-    @NotNull
     @Column(name = "avatar")
-    private Boolean avatarPresent;
+    private boolean avatarPresent;
 
     @ManyToMany
     @JoinTable(
@@ -84,11 +83,11 @@ public class User {
         this.username = username;
     }
 
-    public Boolean getAvatarPresent() {
+    public boolean getAvatarPresent() {
         return avatarPresent;
     }
 
-    public void setAvatarPresent(Boolean avatarPresent) {
+    public void setAvatarPresent(boolean avatarPresent) {
         this.avatarPresent = avatarPresent;
     }
 
