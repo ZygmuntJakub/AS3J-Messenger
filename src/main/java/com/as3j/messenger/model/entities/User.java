@@ -51,12 +51,6 @@ public class User {
         this.email = email;
     }
 
-    public User(@NotNull @Size(min = 3, max = 255) @Email String email, @NotNull @Size(min = 3, max = 30) String username, boolean avatarPresent) {
-        this.email = email;
-        this.username = username;
-        this.avatarPresent = avatarPresent;
-    }
-
     public User(UUID uuid) {
         this.uuid = uuid;
     }
