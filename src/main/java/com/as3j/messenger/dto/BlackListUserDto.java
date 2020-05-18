@@ -1,19 +1,15 @@
 package com.as3j.messenger.dto;
 
-import com.as3j.messenger.entities.User;
+import com.as3j.messenger.model.entities.User;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
 public class BlackListUserDto {
 
+    @NotNull
     @Type(type = "uuid-char")
     private UUID uuid;
 

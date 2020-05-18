@@ -1,9 +1,9 @@
 package com.as3j.messenger.services.impl;
 
 import com.as3j.messenger.dto.AddChatDto;
-import com.as3j.messenger.entities.Chat;
-import com.as3j.messenger.entities.User;
 import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.model.entities.Chat;
+import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.ChatRepository;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.ChatService;

@@ -1,11 +1,11 @@
 package controllers;
 
 import com.as3j.messenger.controllers.BlackListController;
-import com.as3j.messenger.entities.User;
 import com.as3j.messenger.exceptions.AttemptToBlacklistYourselfException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.exceptions.UserAlreadyBlacklistedException;
 import com.as3j.messenger.exceptions.UserNotBlacklistedException;
+import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.BlackListService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

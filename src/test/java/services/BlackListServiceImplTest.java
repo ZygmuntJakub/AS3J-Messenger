@@ -1,10 +1,10 @@
 package services;
 
-import com.as3j.messenger.entities.User;
 import com.as3j.messenger.exceptions.AttemptToBlacklistYourselfException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.exceptions.UserAlreadyBlacklistedException;
 import com.as3j.messenger.exceptions.UserNotBlacklistedException;
+import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.BlackListService;
 import com.as3j.messenger.services.impl.BlackListServiceImpl;
