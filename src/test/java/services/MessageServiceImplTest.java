@@ -1,6 +1,7 @@
 package services;
 
 import com.as3j.messenger.dto.SendMessageDto;
+import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.Chat;
@@ -16,8 +17,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -43,7 +43,7 @@ public class MessageServiceImplTest {
         userRepository = mock(UserRepository.class);
         chatRepository = mock(ChatRepository.class);
         httpServletRequest = mock(HttpServletRequest.class);
-        testPrincipal = () -> "someone";
+        testPrincipal = () -> "someone@mail.com";
         sut = new MessageServiceImpl(messageRepository, userRepository, chatRepository, httpServletRequest);
 
         testUser = new User("email@mail.com");
@@ -52,7 +52,7 @@ public class MessageServiceImplTest {
     }
 
     @Test
-    void shouldAddMessage() throws NoSuchUserException, NoSuchChatException {
+    void shouldAddMessage() throws NoSuchUserException, NoSuchChatException, MessageAuthorIsNotMemberOfChatException {
         // given
         doReturn(testPrincipal).when(httpServletRequest).getUserPrincipal();
         doReturn(Optional.of(testUser)).when(userRepository).findByEmail(any(String.class));
@@ -82,5 +82,18 @@ public class MessageServiceImplTest {
         doReturn(Optional.empty()).when(chatRepository).findByUuid(any(UUID.class));
         // then expect exception
         assertThrows(NoSuchChatException.class, () -> sut.sendMessage(testMessage));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenMessageAuthorIsNotMemberOfChat() {
+        // given
+        Set<User> chatUsers = new HashSet<>(Arrays.asList(new User("anotheruser1@mail.com"),
+                new User("anotheruser2@mail.com")));
+        testChat.setUsers(chatUsers);
+        doReturn(testPrincipal).when(httpServletRequest).getUserPrincipal();
+        doReturn(Optional.of(testUser)).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.of(testChat)).when(chatRepository).findByUuid(any(UUID.class));
+        // then
+        assertThrows(MessageAuthorIsNotMemberOfChatException.class, () -> sut.sendMessage(testMessage));
     }
 }
