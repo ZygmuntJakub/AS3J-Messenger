@@ -20,26 +20,18 @@ import javax.servlet.http.HttpServletRequest;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
-    private final UserRepository userRepository;
     private final ChatRepository chatRepository;
-    private final HttpServletRequest request;
 
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository, UserRepository userRepository,
-                              ChatRepository chatRepository, HttpServletRequest request) {
+    public MessageServiceImpl(MessageRepository messageRepository, ChatRepository chatRepository) {
         this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
         this.chatRepository = chatRepository;
-        this.request = request;
     }
 
     @Override
-    public void sendMessage(SendMessageDto messageDto) throws NoSuchUserException, NoSuchChatException,
+    public void sendMessage(SendMessageDto messageDto, User author) throws NoSuchChatException,
             MessageAuthorIsNotMemberOfChatException {
-        User author = userRepository.findByEmail(request.getUserPrincipal().getName())
-                .orElseThrow(NoSuchUserException::new);
-
-        Chat chat = chatRepository.findByUuid(messageDto.getChatUuid())
+        Chat chat = chatRepository.findById(messageDto.getChatUuid())
                 .orElseThrow(NoSuchChatException::new);
 
         if (chat.getUsers().stream().noneMatch(user -> user.equals(author))) {
