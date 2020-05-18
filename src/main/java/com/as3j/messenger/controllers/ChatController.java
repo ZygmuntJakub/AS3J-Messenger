@@ -3,6 +3,9 @@ package com.as3j.messenger.controllers;
 import com.as3j.messenger.authentication.UserDetailsImpl;
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.dto.ChatDto;
+import com.as3j.messenger.dto.MessageDto;
+import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
+import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.ChatService;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("chats")
@@ -41,5 +45,13 @@ public class ChatController {
     public List<ChatDto> getChats(@AuthenticationPrincipal UserDetailsImpl userDetails) throws NoSuchUserException {
         User user = userService.getByEmail(userDetails.getUsername());
         return chatService.getAll(user);
+    }
+
+    @GetMapping("{id}")
+    @ResponseBody
+    public List<MessageDto> getChat(@PathVariable UUID id, @AuthenticationPrincipal UserDetailsImpl userDetails)
+            throws NoSuchUserException, MessageAuthorIsNotMemberOfChatException, NoSuchChatException {
+        User user = userService.getByEmail(userDetails.getUsername());
+        return chatService.get(user, id);
     }
 }
