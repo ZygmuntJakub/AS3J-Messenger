@@ -32,6 +32,12 @@ public class Message {
     public Message() {
     }
 
+    public Message(Chat chat, @NotNull User user, @NotNull String content) {
+        this.chat = chat;
+        this.user = user;
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,8 +54,9 @@ public class Message {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    @PrePersist
+    public void setTimestamp() {
+        this.timestamp = LocalDateTime.now();
     }
 
     public User getUser() {

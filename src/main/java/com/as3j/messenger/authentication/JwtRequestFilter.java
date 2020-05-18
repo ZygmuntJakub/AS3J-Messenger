@@ -1,6 +1,7 @@
 package com.as3j.messenger.authentication;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,9 +23,10 @@ import java.nio.charset.StandardCharsets;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService jwtUserDetailsService;
-    
+
     private final JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
     public JwtRequestFilter(@Qualifier("userDetailsServiceImpl") UserDetailsService jwtUserDetailsService,
                             JwtTokenUtil jwtTokenUtil) {
         this.jwtUserDetailsService = jwtUserDetailsService;
@@ -38,7 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwtToken = getJwtFromRequest(request);
         String username = null;
 
-        if(jwtToken != null){
+        if (jwtToken != null) {
             username = jwtTokenUtil.getUsernameFromToken(jwtToken);
         }
 
