@@ -11,14 +11,15 @@ import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.ChatRepository;
-import com.as3j.messenger.repositories.MessageRepository;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -62,13 +63,11 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatDto> getAll(User user) {
         List<Chat> chats = chatRepository.findAllByUsersContains(user);
-        return chats.stream().map(c -> {
-            Message lastMessage = c.getMessages().stream()
-                    .max(Comparator.comparing(Message::getTimestamp))
-                    .get();
-            return new ChatDto(c.getName(), c.getUuid(), lastMessage.getContent(), lastMessage.getTimestamp());
-        }).sorted(Comparator.comparing(ChatDto::getTimestamp)).collect(Collectors.toList());
-
+        return chats.stream()
+                .map(c -> c.getMessages().stream()
+                        .max(Comparator.comparing(Message::getTimestamp)).get())
+                .map(m -> new ChatDto(m.getChat().getName(), m.getUser().getUuid(), m.getContent(), m.getTimestamp()))
+                .sorted(Comparator.comparing(ChatDto::getTimestamp)).collect(Collectors.toList());
     }
 
     @Override
