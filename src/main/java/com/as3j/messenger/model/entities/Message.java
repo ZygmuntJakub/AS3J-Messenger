@@ -36,6 +36,7 @@ public class Message {
         this.chat = chat;
         this.user = user;
         this.content = content;
+        this.timestamp = LocalDateTime.now();
     }
 
     public Long getId() {
