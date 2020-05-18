@@ -1,4 +1,5 @@
 spring.h2.console.enabled=true
+spring.cloud.gcp.credentials.location=classpath:keys/storage-key.json
 jwt.secret=testKey
 jwt.lifeTime=5
 jwt.BCryptStrength=10
