@@ -5,6 +5,7 @@ import com.as3j.messenger.controllers.ChatController;
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.dto.ChatDto;
 import com.as3j.messenger.dto.MessageDto;
+import com.as3j.messenger.exceptions.ChatAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
@@ -39,14 +40,14 @@ public class ChatControllerTest {
     }
 
     @Test
-    void shouldAddChat() throws NoSuchUserException {
+    void shouldAddChat() throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
         // given
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // when
-        chatController.addChat(dto);
+        chatController.addChat(dto, userDetails);
         // then
-        verify(chatService, times(1)).add(any(AddChatDto.class));
+        verify(chatService, times(1)).add(any(AddChatDto.class), any(String.class));
     }
 
     @Test
@@ -84,12 +85,12 @@ public class ChatControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAddOperationFails() throws NoSuchUserException {
+    void shouldThrowExceptionIfAddOperationFails() throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
         // given
-        doThrow(NoSuchUserException.class).when(chatService).add(any(AddChatDto.class));
+        doThrow(NoSuchUserException.class).when(chatService).add(any(AddChatDto.class), any(String.class));
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         AddChatDto dto = new AddChatDto("sampleChat", users);
         // then
-        assertThrows(NoSuchUserException.class, () -> chatController.addChat(dto));
+        assertThrows(NoSuchUserException.class, () -> chatController.addChat(dto, userDetails));
     }
 }

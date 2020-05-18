@@ -3,6 +3,7 @@ package com.as3j.messenger.services.impl;
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.dto.ChatDto;
 import com.as3j.messenger.dto.MessageDto;
+import com.as3j.messenger.exceptions.ChatAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
@@ -10,11 +11,13 @@ import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.ChatRepository;
+import com.as3j.messenger.repositories.MessageRepository;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +35,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void add(AddChatDto dto) throws NoSuchUserException {
+    public void add(AddChatDto dto, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
+
         Set<Optional<User>> users = dto.getUsersUuid().stream()
                 .map(userRepository::findById)
                 .collect(Collectors.toSet());
@@ -42,10 +46,19 @@ public class ChatServiceImpl implements ChatService {
         }
 
         Chat chat = new Chat();
-        chat.setName(dto.getName());
-        chat.setUsers(users.stream().
-                map(Optional::get).
-                collect(Collectors.toSet()));
+        String chatName = dto.getName();
+
+        Set<User> userSet = users.stream()
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+        User author = userSet.stream()
+                .filter(u -> u.getEmail().equals(email))
+                .findAny().orElseThrow(ChatAuthorIsNotMemberOfChatException::new);
+        Message message = new Message(chat, LocalDateTime.now(), author, String.format("Chat %s created by %s", chatName, author.getUsername()));
+
+        chat.setName(chatName);
+        chat.setUsers(userSet);
+        chat.getMessages().add(message);
 
         chatRepository.save(chat);
     }
@@ -56,8 +69,7 @@ public class ChatServiceImpl implements ChatService {
         return chats.stream().map(c -> {
             Message lastMessage = c.getMessages().stream()
                     .max(Comparator.comparing(Message::getTimestamp))
-                    .orElse(null);
-            if (lastMessage == null) return new ChatDto(c.getName(), c.getUuid(), null, null);
+                    .get();
             return new ChatDto(c.getName(), c.getUuid(), lastMessage.getContent(), lastMessage.getTimestamp());
         }).sorted(Comparator.comparing(ChatDto::getTimestamp)).collect(Collectors.toList());
 

@@ -1,6 +1,7 @@
 package services;
 
 import com.as3j.messenger.dto.AddChatDto;
+import com.as3j.messenger.exceptions.ChatAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
@@ -8,6 +9,7 @@ import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.ChatRepository;
+import com.as3j.messenger.repositories.MessageRepository;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.impl.ChatServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,13 +41,13 @@ public class ChatServiceImplTest {
     }
 
     @Test
-    void shouldAddChat() throws NoSuchUserException {
+    void shouldAddChat() throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
         // given
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
         doReturn(Optional.of(testUser)).when(userRepository).findById(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // when
-        chatService.add(chat);
+        chatService.add(chat, testUser.getEmail());
         // then
         verify(chatRepository, times(1)).save(any(Chat.class));
         verify(userRepository, times(users.size())).findById(any(UUID.class));
@@ -116,6 +118,6 @@ public class ChatServiceImplTest {
         doReturn(Optional.empty()).when(userRepository).findById(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
-        assertThrows(NoSuchUserException.class, () -> chatService.add(chat));
+        assertThrows(NoSuchUserException.class, () -> chatService.add(chat, testUser.getEmail()));
     }
 }
