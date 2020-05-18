@@ -4,9 +4,10 @@ import com.as3j.messenger.authentication.UserDetailsImpl;
 import com.as3j.messenger.controllers.ChatController;
 import com.as3j.messenger.dto.AddChatDto;
 import com.as3j.messenger.dto.ChatDto;
+import com.as3j.messenger.dto.MessageDto;
+import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
+import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
-import com.as3j.messenger.model.entities.Chat;
-import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.ChatService;
 import com.as3j.messenger.services.UserService;
@@ -14,7 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -57,6 +61,22 @@ public class ChatControllerTest {
         chatController.getChats(userDetails);
         // then
         verify(chatService, times(1)).getAll(any(User.class));
+    }
+
+    @Test
+    void shouldFindChat() throws NoSuchUserException, MessageAuthorIsNotMemberOfChatException, NoSuchChatException {
+        // given
+        User user = new User("email@example.com");
+        doReturn(user).when(userService).getByEmail(any(String.class));
+        MessageDto messageDto = new MessageDto("hi", "user", UUID.randomUUID().toString(),
+                false, LocalDateTime.now());
+        MessageDto messageDto2 = new MessageDto("hello", "user2", UUID.randomUUID().toString(),
+                false, LocalDateTime.now());
+        doReturn(Arrays.asList(messageDto, messageDto2)).when(chatService).get(any(User.class), any(UUID.class));
+        // when
+        chatController.getChat(UUID.randomUUID(), userDetails);
+        // then
+        verify(chatService, times(1)).get(any(User.class), any(UUID.class));
     }
 
     @Test

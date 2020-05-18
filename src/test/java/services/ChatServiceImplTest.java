@@ -1,6 +1,8 @@
 package services;
 
 import com.as3j.messenger.dto.AddChatDto;
+import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
+import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
@@ -10,6 +12,7 @@ import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.impl.ChatServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,7 +52,7 @@ public class ChatServiceImplTest {
     }
 
     @Test
-    void shouldFindChats() throws NoSuchUserException {
+    void shouldFindChats() {
         // given
         User user = new User("email@example.com");
         User user2 = new User("email2@example.com");
@@ -66,6 +69,33 @@ public class ChatServiceImplTest {
         chatService.getAll(user);
         // then
         verify(chatRepository, times(1)).findAllByUsersContains(any(User.class));
+    }
+
+    @Test
+    void shouldFindChat() throws MessageAuthorIsNotMemberOfChatException, NoSuchChatException {
+        // given
+        User user = Mockito.mock(User.class);
+        user.setEmail("email@example.com");
+        user.setUsername("user");
+        user.setAvatarPresent(true);
+        User user2 = Mockito.mock(User.class);
+        user.setEmail("email2@example.com");
+        user.setUsername("user2");
+        user.setAvatarPresent(false);
+        Set<User> users = new HashSet<>(Arrays.asList(user, user2));
+        Chat chat = new Chat("hi", users, new HashSet<>());
+        Message message = new Message(chat, LocalDateTime.now().minusHours(1), user,"hi");
+        Message message2 = new Message(chat, LocalDateTime.now(), user2,"hello");
+        chat.getMessages().add(message);
+        chat.getMessages().add(message2);
+        when(user.getUuid()).thenReturn(UUID.randomUUID());
+        when(user2.getUuid()).thenReturn(UUID.randomUUID());
+        doReturn(Optional.of(new User("email@example.com"))).when(userRepository).findById(any(UUID.class));
+        doReturn(Optional.of(chat)).when(chatRepository).findById(any(UUID.class));
+        // when
+        chatService.get(user, UUID.randomUUID());
+        // then
+        verify(chatRepository, times(1)).findById(any(UUID.class));
     }
 
     @Test

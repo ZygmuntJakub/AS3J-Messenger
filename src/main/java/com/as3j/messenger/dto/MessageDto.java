@@ -1,9 +1,8 @@
 package com.as3j.messenger.dto;
 
-import com.as3j.messenger.model.entities.User;
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class MessageDto {
 
@@ -14,11 +13,18 @@ public class MessageDto {
     private final String author;
 
     @NotNull
+    private final String avatar;
+
+    private final Boolean avatarPresent;
+
+    @NotNull
     private final LocalDateTime timestamp;
 
-    public MessageDto(@NotNull String content, @NotNull String author, @NotNull LocalDateTime timestamp) {
+    public MessageDto(@NotNull String content, @NotNull String author, String avatar, Boolean avatarPresent, @NotNull LocalDateTime timestamp) {
         this.content = content;
         this.author = author;
+        this.avatar = avatar;
+        this.avatarPresent = avatarPresent;
         this.timestamp = timestamp;
     }
 
@@ -34,6 +40,14 @@ public class MessageDto {
         return timestamp;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public Boolean getAvatarPresent() {
+        return avatarPresent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,15 +55,15 @@ public class MessageDto {
 
         MessageDto that = (MessageDto) o;
 
-        if (!getContent().equals(that.getContent())) return false;
         if (!getAuthor().equals(that.getAuthor())) return false;
-        return getTimestamp().equals(that.getTimestamp());
+        if (!getTimestamp().equals(that.getTimestamp())) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = getContent().hashCode();
-        result = 31 * result + getAuthor().hashCode();
+        int result = getAuthor().hashCode();
         result = 31 * result + getTimestamp().hashCode();
         return result;
     }
