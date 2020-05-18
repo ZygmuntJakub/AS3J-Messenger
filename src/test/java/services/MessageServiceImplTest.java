@@ -12,7 +12,6 @@ import com.as3j.messenger.services.impl.MessageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.security.Principal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

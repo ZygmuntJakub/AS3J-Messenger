@@ -29,8 +29,8 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void add(AddChatDto dto) throws NoSuchUserException {
         Set<Optional<User>> users = dto.getUsersUuid().stream()
-                    .map(userRepository::findById)
-                    .collect(Collectors.toSet());
+                .map(userRepository::findById)
+                .collect(Collectors.toSet());
 
         if (users.stream().anyMatch(Optional::isEmpty)) {
             throw new NoSuchUserException();

@@ -33,7 +33,7 @@ public class UserController {
             throws NoSuchUserException, NoSuchFileException {
         User user = userService.getByEmail(userDetails.getUsername());
         editUserDto.patch(user);
-        if(editUserDto.getPhotoID().isPresent()) {
+        if (editUserDto.getPhotoID().isPresent()) {
             fileService.updatePhoto(editUserDto.getPhotoID().get(), user.getUuid());
         }
         userService.update(user);
