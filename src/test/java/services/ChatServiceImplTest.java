@@ -41,6 +41,18 @@ public class ChatServiceImplTest {
     }
 
     @Test
+    void shouldFindChats() throws NoSuchUserException {
+        // given
+        Set<UUID> chats = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
+        doReturn(Optional.of(new Chat())).when(chatRepository).findAllByUsersContains(any(User.class));
+        User user = new User();
+        // when
+        chatService.getAll(user);
+        // then
+        verify(chatRepository, times(1)).findAllByUsersContains(any(User.class));
+    }
+
+    @Test
     void shouldThrowExceptionWhenUserIsNotFound() {
         // given
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
