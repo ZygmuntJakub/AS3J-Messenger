@@ -49,7 +49,7 @@ public class FileServiceImplTest {
         verify(storage).create(any(BlobInfo.class), argument.capture());
         verify(apiConfig, times(1)).getTempBucketName();
         verify(apiConfig, never()).getBucketName();
-        try(var in = new ByteArrayInputStream(argument.getValue())) {
+        try (var in = new ByteArrayInputStream(argument.getValue())) {
             var image = ImageIO.read(in);
             assertTrue(image.getWidth() == 400 || image.getHeight() == 400);
         }
@@ -68,9 +68,9 @@ public class FileServiceImplTest {
         //then
         verify(storage).copy(argument.capture());
         assertEquals("temp", argument.getValue().getSource().getBucket());
-        assertEquals(source+".png", argument.getValue().getSource().getName());
+        assertEquals(source + ".png", argument.getValue().getSource().getName());
         assertEquals("persistent", argument.getValue().getTarget().getBucket());
-        assertEquals(target+".png", argument.getValue().getTarget().getName());
+        assertEquals(target + ".png", argument.getValue().getTarget().getName());
     }
 
     @Test

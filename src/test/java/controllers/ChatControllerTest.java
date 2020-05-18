@@ -17,8 +17,8 @@ import static org.mockito.Mockito.*;
 
 public class ChatControllerTest {
 
-    private ChatService chatService;
     private ChatController chatController;
+    private ChatService chatService;
 
     @BeforeEach
     void setUp() {

@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService jwtUserDetailsService;
-    
+
     private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
@@ -40,7 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwtToken = getJwtFromRequest(request);
         String username = null;
 
-        if(jwtToken != null){
+        if (jwtToken != null) {
             username = jwtTokenUtil.getUsernameFromToken(jwtToken);
         }
 
