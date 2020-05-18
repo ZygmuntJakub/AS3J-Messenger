@@ -39,7 +39,7 @@ public class ChatServiceImpl implements ChatService {
 
         Set<User> users = dto.getUsersUuid().stream()
                 .map(userRepository::findById)
-                .map(Optional::get)
+                .map(u -> u.orElse(null))
                 .collect(Collectors.toSet());
 
         if (users.stream().anyMatch(u -> u == null)) {
