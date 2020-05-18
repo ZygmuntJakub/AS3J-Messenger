@@ -33,7 +33,7 @@ public class Chat {
     @Size(min = 2)
     private Set<User> users = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "chat_id")
     private Set<Message> messages = new HashSet<>();
 
