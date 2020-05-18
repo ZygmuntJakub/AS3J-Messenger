@@ -25,8 +25,8 @@ import java.util.UUID;
 @Service
 public class FileServiceImpl implements FileService {
     Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
-    private Storage storage;
-    private ApiConfig apiConfig;
+    private final Storage storage;
+    private final ApiConfig apiConfig;
 
     @Autowired
     public FileServiceImpl(Storage storage, ApiConfig apiConfig) {

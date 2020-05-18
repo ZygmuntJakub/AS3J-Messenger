@@ -8,11 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class FileControllerTest {
@@ -26,7 +24,7 @@ public class FileControllerTest {
     }
 
     @Test
-    void shouldUploadTempPhotoAndReturnUUID() throws ErrorProcessingImageException, IOException {
+    void shouldUploadTempPhotoAndReturnUUID() throws ErrorProcessingImageException {
         //given
         var mockPhoto = new MockMultipartFile("file", "photo.png",
                 "multipart/form-data", (byte[]) null);

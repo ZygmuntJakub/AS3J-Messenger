@@ -1,7 +1,5 @@
 package com.as3j.messenger.dto;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
-
 public class SingleValueDTO<T> {
     private T value;
 
@@ -18,6 +16,6 @@ public class SingleValueDTO<T> {
     }
 
     public static <T> SingleValueDTO<T> of(T value) {
-        return new SingleValueDTO<T>(value);
+        return new SingleValueDTO<>(value);
     }
 }
