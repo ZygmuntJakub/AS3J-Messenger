@@ -37,27 +37,25 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void add(AddChatDto dto, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
 
-        Set<Optional<User>> users = dto.getUsersUuid().stream()
+        Set<User> users = dto.getUsersUuid().stream()
                 .map(userRepository::findById)
+                .map(Optional::get)
                 .collect(Collectors.toSet());
 
-        if (users.stream().anyMatch(Optional::isEmpty)) {
+        if (users.stream().anyMatch(u -> u == null)) {
             throw new NoSuchUserException();
         }
 
         Chat chat = new Chat();
         String chatName = dto.getName();
 
-        Set<User> userSet = users.stream()
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-        User author = userSet.stream()
+        User author = users.stream()
                 .filter(u -> u.getEmail().equals(email))
                 .findAny().orElseThrow(ChatAuthorIsNotMemberOfChatException::new);
-        Message message = new Message(chat, LocalDateTime.now(), author, String.format("Chat %s created by %s", chatName, author.getUsername()));
+        Message message = new Message(chat, author, String.format("Chat %s created by %s", chatName, author.getUsername()));
 
         chat.setName(chatName);
-        chat.setUsers(userSet);
+        chat.setUsers(users);
         chat.getMessages().add(message);
 
         chatRepository.save(chat);

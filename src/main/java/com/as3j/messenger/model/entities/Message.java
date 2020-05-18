@@ -32,9 +32,8 @@ public class Message {
     public Message() {
     }
 
-    public Message(Chat chat, @NotNull LocalDateTime timestamp, @NotNull User user, @NotNull String content) {
+    public Message(Chat chat, @NotNull User user, @NotNull String content) {
         this.chat = chat;
-        this.timestamp = timestamp;
         this.user = user;
         this.content = content;
     }

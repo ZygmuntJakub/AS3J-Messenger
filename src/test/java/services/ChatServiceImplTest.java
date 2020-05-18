@@ -9,14 +9,12 @@ import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.ChatRepository;
-import com.as3j.messenger.repositories.MessageRepository;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.impl.ChatServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -62,8 +60,10 @@ public class ChatServiceImplTest {
         Set<User> users = new HashSet<>(Arrays.asList(user, user2));
         Chat chat = new Chat("hi", users, new HashSet<>());
 
-        Message message = new Message(chat, LocalDateTime.now().minusHours(1), user,"hi");
-        Message message2 = new Message(chat, LocalDateTime.now(), user2,"hello");
+        Message message = new Message(chat, user, "hi");
+        Message message2 = new Message(chat, user2, "hello");
+        message.setTimestamp();
+        message2.setTimestamp();
 
         chat.getMessages().add(message);
         chat.getMessages().add(message2);
@@ -94,8 +94,10 @@ public class ChatServiceImplTest {
         Set<User> users = new HashSet<>(Arrays.asList(user, user2));
         Chat chat = new Chat("hi", users, new HashSet<>());
 
-        Message message = new Message(chat, LocalDateTime.now().minusHours(1), user,"hi");
-        Message message2 = new Message(chat, LocalDateTime.now(), user2,"hello");
+        Message message = new Message(chat, user, "hi");
+        Message message2 = new Message(chat, user2, "hello");
+        message.setTimestamp();
+        message2.setTimestamp();
 
         chat.getMessages().add(message);
         chat.getMessages().add(message2);
