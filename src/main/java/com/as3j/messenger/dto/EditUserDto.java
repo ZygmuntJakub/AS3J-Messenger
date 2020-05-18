@@ -37,10 +37,10 @@ public class EditUserDto {
     }
 
     public void patch(User user) {
-        if(username != null) {
+        if (username != null) {
             user.setUsername(username);
         }
-        if(photoID != null) {
+        if (photoID != null) {
             user.setAvatarPresent(true);
         }
     }

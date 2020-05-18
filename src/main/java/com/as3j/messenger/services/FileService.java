@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface FileService {
     UUID uploadTempPhoto(MultipartFile file) throws ErrorProcessingImageException;
+
     void updatePhoto(UUID tempPhotoId, UUID userId) throws NoSuchFileException;
 }

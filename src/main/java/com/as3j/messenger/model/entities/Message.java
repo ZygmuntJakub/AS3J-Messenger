@@ -48,8 +48,9 @@ public class Message {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    @PrePersist
+    public void setTimestamp() {
+        this.timestamp = LocalDateTime.now();
     }
 
     public User getUser() {
