@@ -6,16 +6,16 @@ import javax.validation.constraints.Size;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EditUserDTO {
+public class EditUserDto {
     @Size(min = 3, max = 30)
     private String username;
 
     private UUID photoID;
 
-    public EditUserDTO() {
+    public EditUserDto() {
     }
 
-    public EditUserDTO(@Size(min = 3, max = 30) String username, UUID photoID) {
+    public EditUserDto(@Size(min = 3, max = 30) String username, UUID photoID) {
         this.username = username;
         this.photoID = photoID;
     }

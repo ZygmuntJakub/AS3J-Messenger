@@ -2,12 +2,12 @@ package com.as3j.messenger.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class SingleValueDTO<T> {
+public class SingleValueDto<T> {
 
     @NotNull
     private T value;
 
-    public SingleValueDTO(T value) {
+    public SingleValueDto(T value) {
         this.value = value;
     }
 
@@ -19,7 +19,7 @@ public class SingleValueDTO<T> {
         this.value = value;
     }
 
-    public static <T> SingleValueDTO<T> of(T value) {
-        return new SingleValueDTO<>(value);
+    public static <T> SingleValueDto<T> of(T value) {
+        return new SingleValueDto<>(value);
     }
 }

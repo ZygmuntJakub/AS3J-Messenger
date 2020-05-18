@@ -1,6 +1,6 @@
 package com.as3j.messenger.controllers;
 
-import com.as3j.messenger.dto.SingleValueDTO;
+import com.as3j.messenger.dto.SingleValueDto;
 import com.as3j.messenger.exceptions.ErrorProcessingImageException;
 import com.as3j.messenger.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class FileController {
     }
 
     @PostMapping(path = "/avatars", consumes = "multipart/form-data")
-    public SingleValueDTO<UUID> uploadPhoto(@RequestParam("file") MultipartFile file) throws ErrorProcessingImageException {
-        return SingleValueDTO.of(fileService.uploadTempPhoto(file));
+    public SingleValueDto<UUID> uploadPhoto(@RequestParam("file") MultipartFile file) throws ErrorProcessingImageException {
+        return SingleValueDto.of(fileService.uploadTempPhoto(file));
     }
 }

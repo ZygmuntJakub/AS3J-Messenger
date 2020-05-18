@@ -1,7 +1,7 @@
 package com.as3j.messenger.controllers;
 
 import com.as3j.messenger.authentication.UserDetailsImpl;
-import com.as3j.messenger.dto.EditUserDTO;
+import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.User;
@@ -29,12 +29,12 @@ public class UserController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editUser(@RequestBody @Valid EditUserDTO editUserDTO, @AuthenticationPrincipal UserDetailsImpl userDetails)
+    public void editUser(@RequestBody @Valid EditUserDto editUserDto, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws NoSuchUserException, NoSuchFileException {
         User user = userService.getByEmail(userDetails.getUsername());
-        editUserDTO.patch(user);
-        if(editUserDTO.getPhotoID().isPresent()) {
-            fileService.updatePhoto(editUserDTO.getPhotoID().get(), user.getUuid());
+        editUserDto.patch(user);
+        if(editUserDto.getPhotoID().isPresent()) {
+            fileService.updatePhoto(editUserDto.getPhotoID().get(), user.getUuid());
         }
         userService.update(user);
     }
