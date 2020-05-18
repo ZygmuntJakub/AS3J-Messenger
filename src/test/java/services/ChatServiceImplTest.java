@@ -17,15 +17,16 @@ import static org.mockito.Mockito.*;
 
 public class ChatServiceImplTest {
 
+    private ChatServiceImpl sut;
+
     private ChatRepository chatRepository;
     private UserRepository userRepository;
-    private ChatServiceImpl chatService;
 
     @BeforeEach
     void setUp() {
         chatRepository = mock(ChatRepository.class);
         userRepository = mock(UserRepository.class);
-        chatService = new ChatServiceImpl(chatRepository, userRepository);
+        sut = new ChatServiceImpl(chatRepository, userRepository);
     }
 
     @Test
@@ -35,9 +36,10 @@ public class ChatServiceImplTest {
         doReturn(Optional.of(new User("email@example.com"))).when(userRepository).findById(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // when
-        chatService.add(chat);
+        sut.add(chat);
         // then
         verify(chatRepository, times(1)).save(any(Chat.class));
+        verify(userRepository, times(1)).findByUuid(any(UUID.class));
     }
 
     @Test
@@ -47,6 +49,6 @@ public class ChatServiceImplTest {
         doReturn(Optional.ofNullable(null)).when(userRepository).findById(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
-        assertThrows(NoSuchUserException.class, () -> chatService.add(chat));
+        assertThrows(NoSuchUserException.class, () -> sut.add(chat));
     }
 }
