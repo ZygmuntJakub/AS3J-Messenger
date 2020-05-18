@@ -56,13 +56,18 @@ public class ChatServiceImplTest {
         // given
         User user = new User("email@example.com");
         User user2 = new User("email2@example.com");
+
         Set<User> users = new HashSet<>(Arrays.asList(user, user2));
         Chat chat = new Chat("hi", users, new HashSet<>());
+
         Message message = new Message(chat, LocalDateTime.now().minusHours(1), user,"hi");
         Message message2 = new Message(chat, LocalDateTime.now(), user2,"hello");
+
         chat.getMessages().add(message);
         chat.getMessages().add(message2);
+
         List<Chat> chats = new ArrayList<>(Arrays.asList(chat));
+
         doReturn(Optional.of(new User("email@example.com"))).when(userRepository).findById(any(UUID.class));
         doReturn(chats).when(chatRepository).findAllByUsersContains(any(User.class));
         // when
@@ -78,18 +83,24 @@ public class ChatServiceImplTest {
         user.setEmail("email@example.com");
         user.setUsername("user");
         user.setAvatarPresent(true);
+
         User user2 = Mockito.mock(User.class);
         user.setEmail("email2@example.com");
         user.setUsername("user2");
         user.setAvatarPresent(false);
+
         Set<User> users = new HashSet<>(Arrays.asList(user, user2));
         Chat chat = new Chat("hi", users, new HashSet<>());
+
         Message message = new Message(chat, LocalDateTime.now().minusHours(1), user,"hi");
         Message message2 = new Message(chat, LocalDateTime.now(), user2,"hello");
+
         chat.getMessages().add(message);
         chat.getMessages().add(message2);
+
         when(user.getUuid()).thenReturn(UUID.randomUUID());
         when(user2.getUuid()).thenReturn(UUID.randomUUID());
+
         doReturn(Optional.of(new User("email@example.com"))).when(userRepository).findById(any(UUID.class));
         doReturn(Optional.of(chat)).when(chatRepository).findById(any(UUID.class));
         // when

@@ -68,8 +68,9 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatRepository.findById(id).orElseThrow(NoSuchChatException::new);
         if (!chat.getUsers().contains(user)) throw new MessageAuthorIsNotMemberOfChatException();
         return chat.getMessages().stream()
-                .map(c -> new MessageDto(c.getContent(), c.getUser().getUsername(), c.getUser().getUuid().toString(),
-                        c.getUser().getAvatarPresent(), c.getTimestamp()))
+                .map(c -> new MessageDto(c.getContent(), c.getUser().getUsername(),
+                        c.getUser().getAvatarPresent() ? c.getUser().getUuid().toString() : null,
+                        c.getTimestamp()))
                 .sorted(Comparator.comparing(MessageDto::getTimestamp))
                 .collect(Collectors.toList());
 

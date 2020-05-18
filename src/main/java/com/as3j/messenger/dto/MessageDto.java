@@ -12,19 +12,15 @@ public class MessageDto {
     @NotNull
     private final String author;
 
-    @NotNull
     private final String avatar;
-
-    private final Boolean avatarPresent;
 
     @NotNull
     private final LocalDateTime timestamp;
 
-    public MessageDto(@NotNull String content, @NotNull String author, String avatar, Boolean avatarPresent, @NotNull LocalDateTime timestamp) {
+    public MessageDto(@NotNull String content, @NotNull String author, String avatar,  @NotNull LocalDateTime timestamp) {
         this.content = content;
         this.author = author;
         this.avatar = avatar;
-        this.avatarPresent = avatarPresent;
         this.timestamp = timestamp;
     }
 
@@ -42,10 +38,6 @@ public class MessageDto {
 
     public String getAvatar() {
         return avatar;
-    }
-
-    public Boolean getAvatarPresent() {
-        return avatarPresent;
     }
 
     @Override

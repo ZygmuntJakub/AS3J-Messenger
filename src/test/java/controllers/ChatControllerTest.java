@@ -53,9 +53,12 @@ public class ChatControllerTest {
     void shouldFindChats() throws NoSuchUserException {
         // given
         User user = new User("email@example.com");
+
         doReturn(user).when(userService).getByEmail(any(String.class));
+
         ChatDto chatDto = new ChatDto("name", UUID.randomUUID(), "hi", LocalDateTime.now().minusHours(1));
         ChatDto chatDto2 = new ChatDto("name", UUID.randomUUID(), "hello", LocalDateTime.now());
+
         doReturn(Arrays.asList(chatDto, chatDto2)).when(chatService).getAll(any(User.class));
         // when
         chatController.getChats(userDetails);
@@ -67,11 +70,12 @@ public class ChatControllerTest {
     void shouldFindChat() throws NoSuchUserException, MessageAuthorIsNotMemberOfChatException, NoSuchChatException {
         // given
         User user = new User("email@example.com");
+
         doReturn(user).when(userService).getByEmail(any(String.class));
-        MessageDto messageDto = new MessageDto("hi", "user", UUID.randomUUID().toString(),
-                false, LocalDateTime.now());
-        MessageDto messageDto2 = new MessageDto("hello", "user2", UUID.randomUUID().toString(),
-                false, LocalDateTime.now());
+
+        MessageDto messageDto = new MessageDto("hi", "user", null, LocalDateTime.now());
+        MessageDto messageDto2 = new MessageDto("hello", "user2", UUID.randomUUID().toString(), LocalDateTime.now());
+
         doReturn(Arrays.asList(messageDto, messageDto2)).when(chatService).get(any(User.class), any(UUID.class));
         // when
         chatController.getChat(UUID.randomUUID(), userDetails);
