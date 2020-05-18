@@ -38,7 +38,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public UUID uploadTempPhoto(MultipartFile file) throws ErrorProcessingImageException {
         UUID id = UUID.randomUUID();
-        BlobId blobId = BlobId.of(apiConfig.getTempBucketName(), id.toString()+".png");
+        BlobId blobId = BlobId.of(apiConfig.getTempBucketName(), id.toString() + ".png");
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         storage.create(blobInfo, scaleImage(file));
         return id;
@@ -46,15 +46,15 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void updatePhoto(UUID tempPhotoId, UUID userId) throws NoSuchFileException {
-        BlobId sourceBlobId = BlobId.of(apiConfig.getTempBucketName(), tempPhotoId.toString()+".png");
-        BlobId targetBlobId = BlobId.of(apiConfig.getBucketName(), userId.toString()+".png");
+        BlobId sourceBlobId = BlobId.of(apiConfig.getTempBucketName(), tempPhotoId.toString() + ".png");
+        BlobId targetBlobId = BlobId.of(apiConfig.getBucketName(), userId.toString() + ".png");
         Storage.CopyRequest copyRequest = Storage.CopyRequest.newBuilder()
                 .setSource(sourceBlobId)
                 .setTarget(targetBlobId)
                 .build();
         try {
             storage.copy(copyRequest);
-        } catch(StorageException exception) {
+        } catch (StorageException exception) {
             if (exception.getCode() == 404) {
                 throw new NoSuchFileException();
             } else {
@@ -64,8 +64,8 @@ public class FileServiceImpl implements FileService {
     }
 
     private byte[] scaleImage(MultipartFile file) throws ErrorProcessingImageException {
-        try(InputStream in = file.getInputStream();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+        try (InputStream in = file.getInputStream();
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             BufferedImage image = ImageIO.read(in);
             Dimension dimensions = getScaledDimension(new Dimension(image.getWidth(), image.getHeight()),
                     new Dimension(maxAvatarSize, maxAvatarSize));
@@ -85,7 +85,7 @@ public class FileServiceImpl implements FileService {
         double widthRatio = boundary.getWidth() / imageSize.getWidth();
         double heightRatio = boundary.getHeight() / imageSize.getHeight();
         double ratio = Math.min(widthRatio, heightRatio);
-        return new Dimension((int) (imageSize.width  * ratio),
+        return new Dimension((int) (imageSize.width * ratio),
                 (int) (imageSize.height * ratio));
     }
 }

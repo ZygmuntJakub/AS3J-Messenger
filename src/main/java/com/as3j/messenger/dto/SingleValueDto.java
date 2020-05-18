@@ -7,6 +7,9 @@ public class SingleValueDto<T> {
     @NotNull
     private T value;
 
+    public SingleValueDto() {
+    }
+
     public SingleValueDto(T value) {
         this.value = value;
     }

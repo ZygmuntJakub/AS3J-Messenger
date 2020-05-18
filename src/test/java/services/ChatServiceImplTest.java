@@ -19,27 +19,33 @@ import static org.mockito.Mockito.*;
 
 public class ChatServiceImplTest {
 
+    private ChatServiceImpl chatService;
+
     private ChatRepository chatRepository;
     private UserRepository userRepository;
-    private ChatServiceImpl chatService;
+
+    private User testUser;
 
     @BeforeEach
     void setUp() {
         chatRepository = mock(ChatRepository.class);
         userRepository = mock(UserRepository.class);
         chatService = new ChatServiceImpl(chatRepository, userRepository);
+
+        testUser = new User("email@example.com");
     }
 
     @Test
     void shouldAddChat() throws NoSuchUserException {
         // given
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
-        doReturn(Optional.of(new User("email@example.com"))).when(userRepository).findById(any(UUID.class));
+        doReturn(Optional.of(testUser)).when(userRepository).findById(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // when
         chatService.add(chat);
         // then
         verify(chatRepository, times(1)).save(any(Chat.class));
+        verify(userRepository, times(users.size())).findById(any(UUID.class));
     }
 
     @Test
@@ -66,7 +72,7 @@ public class ChatServiceImplTest {
     void shouldThrowExceptionWhenUserIsNotFound() {
         // given
         Set<UUID> users = new HashSet<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
-        doReturn(Optional.ofNullable(null)).when(userRepository).findById(any(UUID.class));
+        doReturn(Optional.empty()).when(userRepository).findById(any(UUID.class));
         AddChatDto chat = new AddChatDto("sampleChat", users);
         // then
         assertThrows(NoSuchUserException.class, () -> chatService.add(chat));

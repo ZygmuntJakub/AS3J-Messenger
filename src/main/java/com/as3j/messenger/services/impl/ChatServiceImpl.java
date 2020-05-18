@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -31,17 +33,19 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void add(AddChatDto dto) throws NoSuchUserException {
-        Set<User> users = dto.getUsersUuid().stream()
-                .map(id -> userRepository.findById(id).orElse(null))
+        Set<Optional<User>> users = dto.getUsersUuid().stream()
+                .map(userRepository::findById)
                 .collect(Collectors.toSet());
 
-        if (users.contains(null)) {
+        if (users.stream().anyMatch(Optional::isEmpty)) {
             throw new NoSuchUserException();
         }
 
         Chat chat = new Chat();
         chat.setName(dto.getName());
-        chat.setUsers(users);
+        chat.setUsers(users.stream().
+                map(Optional::get).
+                collect(Collectors.toSet()));
 
         chatRepository.save(chat);
     }
