@@ -1,5 +1,6 @@
 package controllers;
 
+import com.as3j.messenger.authentication.UserDetailsImpl;
 import com.as3j.messenger.controllers.UserController;
 import com.as3j.messenger.dto.EditUserDTO;
 import com.as3j.messenger.exceptions.NoSuchFileException;
@@ -19,24 +20,26 @@ public class UserControllerTest {
     private UserService userService;
     private FileService fileService;
     private UserController userController;
+    private UserDetailsImpl userDetails;
 
     @BeforeEach
     void setUp() {
         userService = mock(UserService.class);
         fileService = mock(FileService.class);
         userController = new UserController(userService, fileService);
+        userDetails = new UserDetailsImpl("", "");
     }
 
     @Test
     void shouldChangeOnlyUsername() throws NoSuchUserException, NoSuchFileException {
         //given
         var requestDTO = new EditUserDTO("test2", null);
-        var user = new User();
+        var user = new User(UUID.randomUUID());
         user.setUsername("test");
         user.setAvatarPresent(false);
-        doReturn(user).when(userService).getById(any(UUID.class));
+        doReturn(user).when(userService).getByEmail(any(String.class));
         //when
-        userController.editUser(UUID.randomUUID(), requestDTO);
+        userController.editUser(requestDTO, userDetails);
         //then
         verify(userService, times(1)).update(any(User.class));
         verify(fileService, never()).updatePhoto(any(UUID.class), any(UUID.class));
@@ -49,12 +52,12 @@ public class UserControllerTest {
         //given
         var id = UUID.randomUUID();
         var requestDTO = new EditUserDTO(null, id);
-        var user = new User();
+        var user = new User(UUID.randomUUID());
         user.setUsername("test");
         user.setAvatarPresent(false);
-        doReturn(user).when(userService).getById(any(UUID.class));
+        doReturn(user).when(userService).getByEmail(any(String.class));
         //when
-        userController.editUser(UUID.randomUUID(), requestDTO);
+        userController.editUser(requestDTO, userDetails);
         //then
         verify(userService, times(1)).update(any(User.class));
         verify(fileService, times(1)).updatePhoto(any(UUID.class), any(UUID.class));
@@ -67,12 +70,12 @@ public class UserControllerTest {
         //given
         var id = UUID.randomUUID();
         var requestDTO = new EditUserDTO("test2", id);
-        var user = new User();
+        var user = new User(UUID.randomUUID());
         user.setUsername("test");
         user.setAvatarPresent(true);
-        doReturn(user).when(userService).getById(any(UUID.class));
+        doReturn(user).when(userService).getByEmail(any(String.class));
         //when
-        userController.editUser(UUID.randomUUID(), requestDTO);
+        userController.editUser(requestDTO, userDetails);
         //then
         verify(userService, times(1)).update(any(User.class));
         verify(fileService, times(1)).updatePhoto(any(UUID.class), any(UUID.class));

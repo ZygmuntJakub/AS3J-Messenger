@@ -52,6 +52,10 @@ public class User {
         this.email = email;
     }
 
+    public User(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public UUID getUuid() {
         return uuid;
     }

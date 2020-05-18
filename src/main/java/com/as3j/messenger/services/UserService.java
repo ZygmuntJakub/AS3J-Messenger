@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface UserService {
     User getById(UUID id) throws NoSuchUserException;
+    User getByEmail(String email) throws NoSuchUserException;
     void update(User user);
 }

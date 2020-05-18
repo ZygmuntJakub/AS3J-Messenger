@@ -26,4 +26,9 @@ public class UserServiceImpl implements UserService {
     public User getById(UUID id) throws NoSuchUserException {
         return userRepository.findById(id).orElseThrow(NoSuchUserException::new);
     }
+
+    @Override
+    public User getByEmail(String email) throws NoSuchUserException {
+        return userRepository.findByEmail(email).orElseThrow(NoSuchUserException::new);
+    }
 }
