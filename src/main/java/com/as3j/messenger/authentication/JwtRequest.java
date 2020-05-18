@@ -1,16 +1,18 @@
 package com.as3j.messenger.authentication;
 
+import com.as3j.messenger.validation.StrongPassword;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
 
 public class JwtRequest {
     @NotBlank
     @Email
     private String email;
 
-    @NotBlank
-    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
+    @NotNull
+    @StrongPassword
     private String password;
 
     public JwtRequest() {
