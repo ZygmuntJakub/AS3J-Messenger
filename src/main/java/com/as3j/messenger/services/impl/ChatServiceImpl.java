@@ -42,9 +42,7 @@ public class ChatServiceImpl implements ChatService {
                 .map(u -> u.orElse(null))
                 .collect(Collectors.toSet());
 
-        if (users.stream().anyMatch(u -> u == null)) {
-            throw new NoSuchUserException();
-        }
+        if (users.contains(null)) throw new NoSuchUserException();
 
         Chat chat = new Chat();
         String chatName = dto.getName();
