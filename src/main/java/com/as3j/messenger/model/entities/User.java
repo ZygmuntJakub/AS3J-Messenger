@@ -33,9 +33,8 @@ public class User {
     @Column(nullable = false, length = 30)
     private String username;
 
-    @NotNull
-    @Column(name = "avatar_url")
-    private String avatarUrl;
+    @Column(name = "avatar")
+    private boolean avatarPresent;
 
     @ManyToMany
     @JoinTable(
@@ -50,6 +49,10 @@ public class User {
 
     public User(@NotNull @Size(min = 3, max = 255) @Email String email) {
         this.email = email;
+    }
+
+    public User(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public UUID getUuid() {
@@ -80,12 +83,12 @@ public class User {
         this.username = username;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public boolean getAvatarPresent() {
+        return avatarPresent;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatarPresent(boolean avatarPresent) {
+        this.avatarPresent = avatarPresent;
     }
 
     public Set<User> getBlackList() {
