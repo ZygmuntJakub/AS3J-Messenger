@@ -11,12 +11,12 @@ public class MessageDto {
     private final String content;
 
     @NotNull
-    private final User author;
+    private final String author;
 
     @NotNull
     private final LocalDateTime timestamp;
 
-    public MessageDto(@NotNull String content, @NotNull User author, @NotNull LocalDateTime timestamp) {
+    public MessageDto(@NotNull String content, @NotNull String author, @NotNull LocalDateTime timestamp) {
         this.content = content;
         this.author = author;
         this.timestamp = timestamp;
@@ -26,7 +26,7 @@ public class MessageDto {
         return content;
     }
 
-    public User getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
