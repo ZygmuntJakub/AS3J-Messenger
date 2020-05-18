@@ -40,6 +40,12 @@ public class Chat {
     public Chat() {
     }
 
+    public Chat(@NotNull @Size(min = 1, max = 50) String name, @NotEmpty @Size(min = 2) Set<User> users, Set<Message> messages) {
+        this.name = name;
+        this.users = users;
+        this.messages = messages;
+    }
+
     public UUID getUuid() {
         return uuid;
     }
