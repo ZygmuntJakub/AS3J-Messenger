@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Layer, Main} from "grommet";
+import {Box, Main} from "grommet";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 
