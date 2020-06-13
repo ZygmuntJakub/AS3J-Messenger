@@ -1,5 +1,6 @@
 package com.as3j.messenger.controllers;
 
+import com.as3j.messenger.dto.AddUserDto;
 import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
@@ -37,5 +38,11 @@ public class UserController {
             fileService.updatePhoto(editUserDto.getPhotoID().get(), user.getUuid());
         }
         userService.update(user);
+    }
+
+    @PostMapping(value = "register", consumes = "application/json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void registerUser(@RequestBody @Valid AddUserDto addUserDto) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -11,4 +11,6 @@ public interface UserService {
     User getByEmail(String email) throws NoSuchUserException;
 
     void update(User user);
+
+    void create(User user);
 }

@@ -33,4 +33,9 @@ public class UserServiceImpl implements UserService {
     public User getByEmail(String email) throws NoSuchUserException {
         return userRepository.findByEmail(email).orElseThrow(NoSuchUserException::new);
     }
+
+    @Override
+    public void create(User user) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -7,10 +7,12 @@ import com.as3j.messenger.services.UserService;
 import com.as3j.messenger.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -51,5 +53,16 @@ public class UserServiceImplTest {
         doReturn(Optional.ofNullable(null)).when(userRepository).findById(any(UUID.class));
         //then
         assertThrows(NoSuchUserException.class, () -> userService.getById(UUID.randomUUID()));
+    }
+
+    @Test
+    void shouldCreateUser() {
+        //given
+        var user = new User();
+        user.setEmail("test@test.com");
+        //when
+        userService.create(user);
+        //then
+        verify(userRepository, times(1)).save(user);
     }
 }

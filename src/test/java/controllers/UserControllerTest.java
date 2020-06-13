@@ -2,6 +2,7 @@ package controllers;
 
 import com.as3j.messenger.authentication.UserDetailsImpl;
 import com.as3j.messenger.controllers.UserController;
+import com.as3j.messenger.dto.AddUserDto;
 import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
@@ -81,5 +82,18 @@ public class UserControllerTest {
         verify(fileService, times(1)).updatePhoto(any(UUID.class), any(UUID.class));
         assertEquals("test2", user.getUsername());
         assertTrue(user.getAvatarPresent());
+    }
+
+    @Test
+    void shouldCreateUser() {
+        //given
+        var user = new AddUserDto();
+        user.setEmail("test@test.com");
+        user.setPassword("ZAQ!2wsx");
+        user.setUsername("user1");
+        //when
+        userController.registerUser(user);
+        //then
+        verify(userService, times(1)).create(any(User.class));
     }
 }
