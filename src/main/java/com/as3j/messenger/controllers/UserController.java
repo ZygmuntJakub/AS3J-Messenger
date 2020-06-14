@@ -1,9 +1,11 @@
 package com.as3j.messenger.controllers;
 
+import com.as3j.messenger.common.MyPasswordEncoder;
 import com.as3j.messenger.dto.AddUserDto;
 import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.FileService;
 import com.as3j.messenger.services.UserService;
@@ -21,11 +23,13 @@ public class UserController {
 
     private final UserService userService;
     private final FileService fileService;
+    private final MyPasswordEncoder encoder;
 
     @Autowired
-    public UserController(UserService userService, FileService fileService) {
+    public UserController(UserService userService, FileService fileService, MyPasswordEncoder encoder) {
         this.userService = userService;
         this.fileService = fileService;
+        this.encoder = encoder;
     }
 
     @PatchMapping
@@ -41,8 +45,16 @@ public class UserController {
     }
 
     @PostMapping(value = "register", consumes = "application/json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void registerUser(@RequestBody @Valid AddUserDto addUserDto) {
-        throw new UnsupportedOperationException();
+    @ResponseStatus(HttpStatus.OK)
+    public void registerUser(@RequestBody @Valid AddUserDto addUserDto) throws UserWithSuchEmailExistException {
+        userService.create(convertToUser(addUserDto));
+    }
+
+    private User convertToUser(AddUserDto addUserDto) {
+        User user = new User();
+        user.setEmail(addUserDto.getEmail());
+        user.setUsername(addUserDto.getUsername());
+        user.setPassword(encoder.encode(addUserDto.getPassword()));
+        return user;
     }
 }

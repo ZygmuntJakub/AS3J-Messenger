@@ -1,6 +1,7 @@
 package services;
 
 import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.UserService;
@@ -56,7 +57,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void shouldCreateUser() {
+    void shouldCreateUser() throws UserWithSuchEmailExistException {
         //given
         var user = new User();
         user.setEmail("test@test.com");
@@ -65,4 +66,5 @@ public class UserServiceImplTest {
         //then
         verify(userRepository, times(1)).save(user);
     }
+
 }

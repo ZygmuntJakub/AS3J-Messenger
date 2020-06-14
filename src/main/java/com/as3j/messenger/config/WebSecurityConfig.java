@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/auth/login", "/v3/api-docs", "/files/avatars").permitAll()
+                .antMatchers("/auth/login", "/v3/api-docs", "/files/avatars", "/users/register").permitAll()
                 .and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
