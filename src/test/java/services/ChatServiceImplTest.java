@@ -35,7 +35,8 @@ public class ChatServiceImplTest {
         userRepository = mock(UserRepository.class);
         chatService = new ChatServiceImpl(chatRepository, userRepository);
 
-        testUser = new User("email@example.com");
+        testUser = new User(UUID.randomUUID());
+        testUser.setEmail("email@example.com");
     }
 
     @Test

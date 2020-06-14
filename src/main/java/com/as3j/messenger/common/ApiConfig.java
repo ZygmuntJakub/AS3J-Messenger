@@ -8,10 +8,12 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class ApiConfig {
     private final String bucketName;
     private final String tempBucketName;
+    private final String projectId;
 
-    public ApiConfig(String bucketName, String tempBucketName) {
+    public ApiConfig(String bucketName, String tempBucketName, String projectId) {
         this.bucketName = bucketName;
         this.tempBucketName = tempBucketName;
+        this.projectId = projectId;
     }
 
     public String getBucketName() {
@@ -20,5 +22,9 @@ public class ApiConfig {
 
     public String getTempBucketName() {
         return tempBucketName;
+    }
+
+    public String getProjectId() {
+        return projectId;
     }
 }
