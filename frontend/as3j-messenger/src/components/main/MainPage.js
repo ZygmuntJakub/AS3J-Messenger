@@ -1,11 +1,13 @@
 import React from 'react';
 import {useAuth} from "../../context/context";
-import {Avatar, Box, Button, Text, Sidebar, Nav} from "grommet";
-import {Logout, Chat, UserSettings} from 'grommet-icons';
-import ChatList from "./ChatList";
-import {useHistory} from "react-router-dom";
+import {Avatar, Box, Button, Nav, Sidebar, Text} from "grommet";
+import {Chat, Group, Logout, UserSettings} from 'grommet-icons';
+import ChatList from "../messages/ChatList";
+import {Route, Switch, useHistory} from "react-router-dom";
+import EditUser from "../user/EditUser";
+import Users from "../user/Users";
 
-function MessagesPage() {
+function MainPage() {
     const {setAuthToken} = useAuth();
 
     const logout = () => {
@@ -28,15 +30,23 @@ function MessagesPage() {
                      }
             >
                 <Nav gap="small">
-                    <Button icon={<Chat/>} label={"messages"} onClick={() => history.push("/")} active/>
+                    <Button icon={<Chat/>} label={"messages"} onClick={() => history.push("/messages")} />
+                    <Button icon={<Group/>} label={"users"} onClick={() => history.push("/users")}/>
                     <Button icon={<UserSettings/>} label={"account"} onClick={() => history.push("/account")}/>
                 </Nav>
             </Sidebar>
-            <ChatList/>
+
+
+            <Switch>
+                <Route exact path="/messages" component={ChatList}/>
+                <Route exact path="/users" component={Users}/>
+                <Route exact path="/account" component={EditUser}/>
+            </Switch>
+
             <Box background={"band"} height={"100vh"}>
             </Box>
         </Box>
     );
 }
 
-export default MessagesPage;
+export default MainPage;

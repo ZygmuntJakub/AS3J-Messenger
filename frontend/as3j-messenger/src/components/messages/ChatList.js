@@ -5,19 +5,23 @@ import axios from "axios";
 import {backendUrl} from "../../utils/constants";
 import authHeader from "../../utils/authHeader";
 import {useHistory} from "react-router-dom";
+import {useAuth} from "../../context/context";
 
 
 function ChatList() {
     const [data, setData] = React.useState([]);
+    const [chat, setChat] = React.useState('');
+    const { setAuthToken } = useAuth();
     const history = useHistory();
 
     useEffect(() => {
         axios.get(`${backendUrl}/chats`, {headers: {Authorization: authHeader()}}).then(result => {
             setData(result.data)
+            setAuthToken(result.headers.authorization);
         }).catch(e => {
             history.push("/login")
         });
-    }, [history])
+    }, [history,setAuthToken])
 
     return (
         <Table height="100vh">
@@ -29,7 +33,7 @@ function ChatList() {
             <TableBody>
                 {data && data.map((chat) => {
                     return (
-                        <TableRow>
+                        <TableRow key={chat.name}>
                             <TableCell>
                                 <Button hoverIndicator={true} plain focusIndicator={false} color={"brand"} icon={<FormNext/>} secondary key={chat.name} label={
                                     <Box pad={"medium"}>
@@ -40,7 +44,6 @@ function ChatList() {
                                 </Button>
                             </TableCell>
                         </TableRow>
-
                     )
                 })}
             </TableBody>

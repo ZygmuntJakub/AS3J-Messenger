@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import LoginPage from "./components/auth/LoginPage";
-import MessagesPage from "./components/messages/MessagesPage";
+import MainPage from "./components/main/MainPage";
 import {AuthContext} from "./context/context";
 import {Grommet} from 'grommet';
 import {theme} from "./utils/styles";
@@ -23,7 +23,7 @@ function App() {
                     <Switch>
                         <Route exact path="/login" component={LoginPage}/>
                         <Route path="/" render={() => authToken ? (
-                            <MessagesPage/>
+                            <MainPage/>
                         ) : (
                             <Redirect to="/login"/>
                         )}/>

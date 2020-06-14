@@ -17,7 +17,7 @@ function LoginForm() {
             ...data
         }).then(result => {
             if (result.status === 200) {
-                setAuthToken(result.data);
+                setAuthToken(result.headers.authorization);
                 setLoggedIn(true);
             } else {
                 setIsError(true);
