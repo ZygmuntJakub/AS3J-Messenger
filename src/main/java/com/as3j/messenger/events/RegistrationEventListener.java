@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class RegistrationEventListener {
     @Value("${mail.registration.subject}")
     private String emailSubject;
-    @Value("${mail.registration.content")
+    @Value("${mail.registration.content}")
     private String messageContent;
 
     private EmailService emailService;

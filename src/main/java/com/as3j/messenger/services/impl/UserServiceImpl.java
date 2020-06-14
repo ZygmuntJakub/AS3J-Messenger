@@ -36,11 +36,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(User user) throws UserWithSuchEmailExistException {
+    public User create(User user) throws UserWithSuchEmailExistException {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserWithSuchEmailExistException();
         }
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }

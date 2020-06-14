@@ -2,8 +2,10 @@ package com.as3j.messenger.services.impl;
 
 import com.as3j.messenger.common.ApiConfig;
 import com.as3j.messenger.services.EmailService;
+import com.mailjet.client.ClientOptions;
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
+import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.resource.Emailv31;
@@ -39,11 +41,12 @@ public class EmailServiceImpl implements EmailService {
                                             .put("Name", name)))
                         .put(Emailv31.Message.SUBJECT, subject)
                         .put(Emailv31.Message.HTMLPART, message)));
+        client.setDebug(MailjetClient.VERBOSE_DEBUG);
         client.post(request);
     }
 
     @PostConstruct
     public void initialize() {
-        this.client = new MailjetClient(apiConfig.getMjPublicKey(), apiConfig.getMjPrivateKey());
+        this.client = new MailjetClient(apiConfig.getMjPublicKey(), apiConfig.getMjPrivateKey(), new ClientOptions("v3.1"));
     }
 }
