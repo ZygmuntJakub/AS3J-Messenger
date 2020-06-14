@@ -44,7 +44,7 @@ public class UserController {
         userService.update(user);
     }
 
-    @PostMapping(value = "register", consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void registerUser(@RequestBody @Valid AddUserDto addUserDto) throws UserWithSuchEmailExistException {
         userService.create(convertToUser(addUserDto));
