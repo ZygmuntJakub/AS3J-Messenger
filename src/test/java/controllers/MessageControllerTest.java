@@ -10,6 +10,7 @@ import com.as3j.messenger.services.MessageService;
 import com.as3j.messenger.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class MessageControllerTest {
     private MessageController messageController;
     private MessageService messageService;
     private UserService userService;
+    private SimpMessagingTemplate webSocket;
 
     private UserDetails userDetails;
 
@@ -35,7 +37,8 @@ public class MessageControllerTest {
         messageService = mock(MessageService.class);
         userService = mock(UserService.class);
         userDetails = mock(UserDetails.class);
-        messageController = new MessageController(messageService, userService);
+        webSocket = mock(SimpMessagingTemplate.class);
+        messageController = new MessageController(messageService, userService, webSocket);
 
         author = new User("email@mail.com");
         chatUuid = UUID.randomUUID();
