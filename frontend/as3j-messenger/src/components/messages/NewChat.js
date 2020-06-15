@@ -47,7 +47,7 @@ const NewChat = () => {
     }
 
     return (
-        <Box direction={"column"} width={"100%"} align={"center"}>
+        <Box animation={"fadeIn"} direction={"column"} width={"100%"} align={"center"}>
             <Heading alignSelf={"center"} size={"xsmall"}>add new chat</Heading>
             {error && (<Text color={"red"}>fill data</Text>)}
             <Box direction={"row"}>

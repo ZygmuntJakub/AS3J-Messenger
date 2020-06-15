@@ -38,7 +38,7 @@ const Users = () => {
 
         }, [history, setAuthToken])
         return (
-            <Box direction={"row"} pad={"small"} justify={"around"} fill>
+            <Box animation={"fadeIn"} direction={"row"} pad={"small"} justify={"around"} fill>
                 <Box width={"medium"}>
                     <Table height="100vh">
                         <TableHeader>
