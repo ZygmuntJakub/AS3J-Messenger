@@ -100,45 +100,17 @@ public class UserControllerTest {
     @Test
     void shouldChangePassword() throws NoSuchUserException, WrongCurrentPasswordException {
         //given
-        String currentPassword = "ZAQ!245sx";
-        String newPassword = "Z12!2wsx";
         User user = new User(UUID.randomUUID());
-        user.setPassword(passwordEncoder.encode(currentPassword));
 
         ChangePasswordDto changePasswordDto = new ChangePasswordDto();
-        changePasswordDto.setCurrentPassword(currentPassword);
-        changePasswordDto.setNewPassword(newPassword);
-
         doReturn(user).when(userService).getByEmail(any(String.class));
         //when
         userController.changePassword(changePasswordDto, userDetails);
         //then
-        verify(userService, times(1)).update(any(User.class));
-        assertTrue(passwordEncoder.matches(newPassword, user.getPassword()));
-
+        verify(userService, times(1)).changePassword(user, changePasswordDto);
     }
 
     @Test
-    void shouldThrowExceptionWhenWrongCurrentPassword() throws NoSuchUserException, WrongCurrentPasswordException {
-        //given
-        String currentPassword = "ZAQ!245sx";
-        String newPassword = "Z12!2wsx";
-        User user = new User(UUID.randomUUID());
-        user.setPassword(passwordEncoder.encode(currentPassword));
-
-        ChangePasswordDto changePasswordDto = new ChangePasswordDto();
-        changePasswordDto.setCurrentPassword(currentPassword + "rt");
-        changePasswordDto.setNewPassword(newPassword);
-
-        doReturn(user).when(userService).getByEmail(any(String.class));
-        //then
-        assertThrows(WrongCurrentPasswordException.class,
-                () -> userController.changePassword(changePasswordDto, userDetails));
-        verify(userService, times(0)).update(any(User.class));
-        assertTrue(passwordEncoder.matches(currentPassword, user.getPassword()));
-
-    }
-
     void shouldCreateUser() throws UserWithSuchEmailExistException {
         //given
         var user = new AddUserDto();
