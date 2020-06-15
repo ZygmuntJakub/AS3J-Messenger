@@ -62,7 +62,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<ChatDto> getAll(User user) {
-        List<Chat> chats = chatRepository.findAllByUsersEquals(user);
+        List<Chat> chats = chatRepository.findAllByUsersContains(user);
         return chats.stream()
                 .map(c -> c.getMessages().stream()
                         .max(Comparator.comparing(Message::getTimestamp)).get())
