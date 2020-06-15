@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface ChatService {
 
-    void add(AddChatDto chat, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException;
+    ChatDto add(AddChatDto chat, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException;
 
     List<ChatDto> getAll(User user);
 

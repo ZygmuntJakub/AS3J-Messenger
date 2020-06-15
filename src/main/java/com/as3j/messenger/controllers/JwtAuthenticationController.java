@@ -3,6 +3,8 @@ package com.as3j.messenger.controllers;
 
 import com.as3j.messenger.authentication.JwtRequest;
 import com.as3j.messenger.authentication.JwtTokenUtil;
+import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,18 +25,24 @@ public class JwtAuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
+    private final UserService userService;
 
     @Autowired
-    public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
+    public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
+                                       UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public void createAuthenticationToken(@RequestBody @Valid JwtRequest credentials, HttpServletResponse response) {
+    public void createAuthenticationToken(@RequestBody @Valid JwtRequest credentials, HttpServletResponse response)
+            throws NoSuchUserException {
         Authentication authInfo = authenticate(credentials);
         final String token = jwtTokenUtil.generateToken(authInfo.getName());
         response.addHeader("Authorization", String.format("Bearer %s", token));
+        UUID uuid = userService.getByEmail(authInfo.getName()).getUuid();
+        response.addHeader("UUID", uuid.toString());
     }
 
     private Authentication authenticate(JwtRequest credentials) {
