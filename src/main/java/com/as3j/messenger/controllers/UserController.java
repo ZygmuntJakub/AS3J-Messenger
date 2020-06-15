@@ -49,6 +49,7 @@ public class UserController {
         User user = userService.getByEmail(userDetails.getUsername());
         return userService.getAll().stream()
                 .filter(user1 -> !user1.getEmail().equals(user.getEmail()))
+                .filter(user1 -> !user.getBlackList().contains(user1))
                 .map(UserDto::fromUserEntity).collect(Collectors.toList());
     }
 }

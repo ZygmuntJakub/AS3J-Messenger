@@ -14,23 +14,31 @@ const Users = () => {
         const {setAuthToken} = useAuth();
         const history = useHistory();
 
-        useEffect(() => {
+        const getUsers = () => {
             axios.get(`${backendUrl}/users`, {headers: {Authorization: authHeader()}}).then(result => {
                 setUsers(result.data)
                 setAuthToken(result.headers.authorization);
             }).catch(e => {
                 history.push("/login")
             });
+        }
 
+        const getBlacklist = () => {
             axios.get(`${backendUrl}/blacklists`, {headers: {Authorization: authHeader()}}).then(result => {
                 setBlacklist(result.data)
                 setAuthToken(result.headers.authorization);
             }).catch(e => {
                 history.push("/login")
             });
+        }
+
+        useEffect(() => {
+            getUsers();
+            getBlacklist();
+
         }, [history, setAuthToken])
         return (
-            <Box direction={"row"} pad={"small"}  justify={"around"} fill>
+            <Box direction={"row"} pad={"small"} justify={"around"} fill>
                 <Box width={"medium"}>
                     <Table height="100vh">
                         <TableHeader>
@@ -46,7 +54,20 @@ const Users = () => {
                                             <Box justify={"between"} direction={"row"} plain>
                                                 <Text size={"small"}>{user.username}</Text>
                                                 <Button size={"small"} label="start chat"/>
-                                                <Button size={"small"} label="block"/>
+                                                <Button
+                                                    size={"small"}
+                                                    label="block"
+                                                    onClick={() => {
+                                                        axios.post(`${backendUrl}/blacklists/${user.uuid}`, {},
+                                                            {headers: {Authorization: authHeader()}}).then(result => {
+                                                            setUsers(result.data);
+                                                            getUsers();
+                                                            getBlacklist();
+                                                        }).catch(e => {
+                                                            alert(e);
+                                                        });
+                                                    }}
+                                                />
                                             </Box>
                                         </TableCell>
                                     </TableRow>
@@ -69,8 +90,20 @@ const Users = () => {
                                         <TableCell>
                                             <Box justify={"between"} direction={"row"} plain>
                                                 <Text size={"small"}>{user.username}</Text>
-                                                <Button size={"small"} label="start chat"/>
-                                                <Button size={"small"} label="unblock"/>
+                                                <Button
+                                                    size={"small"}
+                                                    label="unblock"
+                                                    onClick={() => {
+                                                        axios.delete(`${backendUrl}/blacklists/${user.uuid}`,
+                                                            {headers: {Authorization: authHeader()}}).then(result => {
+                                                            setUsers(result.data);
+                                                            getUsers();
+                                                            getBlacklist();
+                                                        }).catch(e => {
+                                                            alert(e);
+                                                        });
+                                                    }}
+                                                />
                                             </Box>
                                         </TableCell>
                                     </TableRow>
