@@ -2,18 +2,25 @@ package controllers;
 
 import com.as3j.messenger.authentication.UserDetailsImpl;
 import com.as3j.messenger.controllers.UserController;
+
 import com.as3j.messenger.dto.ChangePasswordDto;
 import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
-import com.as3j.messenger.exceptions.UserNotBlacklistedException;
 import com.as3j.messenger.exceptions.WrongCurrentPasswordException;
+
+import com.as3j.messenger.dto.AddUserDto;
+
+import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
+
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.FileService;
 import com.as3j.messenger.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
@@ -129,5 +136,18 @@ public class UserControllerTest {
                 () -> userController.changePassword(changePasswordDto, userDetails));
         verify(userService, times(0)).update(any(User.class));
         assertTrue(passwordEncoder.matches(currentPassword, user.getPassword()));
+
+    }
+
+    void shouldCreateUser() throws UserWithSuchEmailExistException {
+        //given
+        var user = new AddUserDto();
+        user.setEmail("test@test.com");
+        user.setPassword("ZAQ!2wsx");
+        user.setUsername("user1");
+        //when
+        userController.registerUser(user);
+        //then
+        verify(userService, times(1)).create(any(User.class));
     }
 }

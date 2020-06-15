@@ -2,10 +2,8 @@ package com.as3j.messenger.controllers;
 
 
 import com.as3j.messenger.authentication.JwtRequest;
-import com.as3j.messenger.authentication.JwtResponse;
 import com.as3j.messenger.authentication.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -30,10 +29,10 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody @Valid JwtRequest credentials) {
+    public void createAuthenticationToken(@RequestBody @Valid JwtRequest credentials, HttpServletResponse response) {
         Authentication authInfo = authenticate(credentials);
         final String token = jwtTokenUtil.generateToken(authInfo.getName());
-        return ResponseEntity.ok(new JwtResponse(token));
+        response.addHeader("Authorization", String.format("Bearer %s", token));
     }
 
     private Authentication authenticate(JwtRequest credentials) {

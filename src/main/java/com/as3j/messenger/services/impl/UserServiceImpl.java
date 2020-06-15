@@ -1,6 +1,7 @@
 package com.as3j.messenger.services.impl;
 
 import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.repositories.UserRepository;
 import com.as3j.messenger.services.UserService;
@@ -32,5 +33,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByEmail(String email) throws NoSuchUserException {
         return userRepository.findByEmail(email).orElseThrow(NoSuchUserException::new);
+    }
+
+    @Override
+    public void create(User user) throws UserWithSuchEmailExistException {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserWithSuchEmailExistException();
+        }
+
+        userRepository.save(user);
     }
 }

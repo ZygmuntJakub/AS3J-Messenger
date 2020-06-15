@@ -5,6 +5,8 @@ import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.exceptions.WrongCurrentPasswordException;
+import com.as3j.messenger.dto.AddUserDto;
+import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.FileService;
 import com.as3j.messenger.services.UserService;
@@ -44,6 +46,7 @@ public class UserController {
         userService.update(user);
     }
 
+
     @PatchMapping(path = "password")
     public void changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto,
                                @AuthenticationPrincipal UserDetails userDetails)
@@ -56,5 +59,19 @@ public class UserController {
             throw new WrongCurrentPasswordException();
 
         userService.update(user);
+    }
+
+    @PostMapping(consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void registerUser(@RequestBody @Valid AddUserDto addUserDto) throws UserWithSuchEmailExistException {
+        userService.create(convertToUser(addUserDto));
+    }
+
+    private User convertToUser(AddUserDto addUserDto) {
+        User user = new User();
+        user.setEmail(addUserDto.getEmail());
+        user.setUsername(addUserDto.getUsername());
+        user.setPassword(passwordEncoder.encode(addUserDto.getPassword()));
+        return user;
     }
 }
