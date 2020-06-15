@@ -24,11 +24,12 @@ function ChatList() {
             setData(result.data)
             setAuthToken(result.headers.authorization);
             stompClient.connect({}, frame => {
-                const currentUserUuid = userInfo().uuid;
-
-                stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {
-                    // Reaction for new chat arrival
-                    console.log(message);
+                stompClient.subscribe(`/chats/add/${userInfo().uuid}`, message => {
+                    const chats = result.data;
+                    chats.unshift(JSON.parse(message.body))
+                    setData(() => [
+                        ...chats
+                    ]);
                 });
             });
         }).catch(e => {
@@ -38,8 +39,8 @@ function ChatList() {
 
     return (
         <>
-            <Box width={"medium"}>
-                <Table height="100vh">
+            <Box width={"400px"} overflow={"auto"} height="100vh">
+                <Table >
                     <TableHeader>
                         <TableRow>
                             <TableCell><Text color={"brand"}>Chats</Text></TableCell>
@@ -63,7 +64,11 @@ function ChatList() {
                                                     <Text size={"small"}>{chat.name}</Text>
                                                     <Text size={"xsmall"}>{chat.lastMessage}</Text>
                                                     <Text
-                                                        size={"xsmall"}>{new Date(chat.timestamp).toDateString()}</Text>
+                                                        size={"xsmall"}>
+                                                        {chat.timestamp.nano ?
+                                                            chat.timestamp.hour + ":" + chat.timestamp.minute + ":" + chat.timestamp.second :
+                                                            new Date(chat.timestamp).toDateString()}
+                                                    </Text>
                                                 </Box>}
                                             onClick={() => setChat(chat.chatUuid)}
                                         >

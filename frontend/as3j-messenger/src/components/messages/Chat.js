@@ -28,7 +28,6 @@ export const Chat = ({chat}) => {
                 setData(() => [
                     ...messages,
                 ])
-                console.log(JSON.parse(message.body))
             });
         });
     }
@@ -61,71 +60,77 @@ export const Chat = ({chat}) => {
 
 
     return (
-        <Grid
-            pad={'10px'}
-            rows={['80vh', '20%']}
-            columns={['100%']}
-            gap="small"
-            areas={[
-                {name: 'messages', start: [0, 0], end: [0, 0]},
-                {name: 'send', start: [0, 1], end: [0, 1]},
-            ]}
-        >
-            {data && (
-                <Box round overflow={"auto"} gridArea="messages"
-                     background="light-1">
-                    {data.map((c) => (
-                        <>
-                            {c.author !== userInfo().username ? (
-                                <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
-                                     pad={"small"} background="light-3">
-                                    <Text>{c.content}</Text>
-                                    <Text size={"xsmall"}>{c.author}</Text>
-                                    <Text size={"xsmall"}>
-                                        {!c.timestamp.nano ?
-                                            new Date(c.timestamp).toLocaleTimeString() :
-                                            c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
-                                        }
-                                    </Text>
-                                </Box>
-                            ) : (
-                                <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
-                                     pad={"small"} background="brand"
-                                     align={"end"}>
-                                    <Text>{c.content}</Text>
-                                    <Text size={"xsmall"}>You</Text>
-                                    <Text size={"xsmall"}>
-                                        {!c.timestamp.nano ?
-                                            new Date(c.timestamp).toLocaleTimeString() :
-                                            c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
-                                        }
-                                    </Text>
-                                </Box>
-                            )}
-                        </>
-                    ))}
-                    <div ref={messagesEndRef}/>
+        <Box pad={"medium"}>
+            <Grid
+                pad={'20px'}
+                rows={['80vh', '20%']}
+                columns={['100%']}
+                gap="small"
+                areas={[
+                    {name: 'messages', start: [0, 0], end: [0, 0]},
+                    {name: 'send', start: [0, 1], end: [0, 1]},
+                ]}
+            >
+                {data && (
+                    <Box
+                        margin={{top: "large"}}
+                        round
+                        overflow={"auto"}
+                        gridArea="messages"
+                        background="light-1">
+                        {data.map((c) => (
+                            <>
+                                {c.author !== userInfo().username ? (
+                                    <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
+                                         pad={"small"} background="light-3">
+                                        <Text>{c.content}</Text>
+                                        <Text size={"xsmall"}>{c.author}</Text>
+                                        <Text size={"xsmall"}>
+                                            {!c.timestamp.nano ?
+                                                new Date(c.timestamp).toDateString() :
+                                                c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
+                                            }
+                                        </Text>
+                                    </Box>
+                                ) : (
+                                    <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
+                                         pad={"small"} background="brand"
+                                         align={"end"}>
+                                        <Text>{c.content}</Text>
+                                        <Text size={"xsmall"}>You</Text>
+                                        <Text size={"xsmall"}>
+                                            {!c.timestamp.nano ?
+                                                new Date(c.timestamp).toLocaleTimeString() :
+                                                c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
+                                            }
+                                        </Text>
+                                    </Box>
+                                )}
+                            </>
+                        ))}
+                        <div ref={messagesEndRef}/>
+                    </Box>
+                )}
+                <Box round pad={"small"} animation={"fadeIn"} margin={"medium"} gridArea="send" background="light-1">
+                    <TextArea
+                        resize={false}
+                        fill
+                        placeholder="type here"
+                        value={message}
+                        onChange={event => setMessage(event.target.value)}
+                    />
+                    <Button
+                        type={"submit"}
+                        gap={"small"}
+                        margin={"small"}
+                        size={"medium"}
+                        onClick={handleSubmit}
+                    >
+                        <Send/><Text margin={"small"}>Send</Text>
+                    </Button>
                 </Box>
-            )}
-            <Box animation={"fadeIn"} margin={"medium"} gridArea="send" background="light-1">
-                <TextArea
-                    resize={false}
-                    fill
-                    placeholder="type here"
-                    value={message}
-                    onChange={event => setMessage(event.target.value)}
-                />
-                <Button
-                    type={"submit"}
-                    gap={"small"}
-                    margin={"small"}
-                    size={"medium"}
-                    onClick={handleSubmit}
-                >
-                    <Send/><Text margin={"small"}>Send</Text>
-                </Button>
-            </Box>
-        </Grid>
+            </Grid>
+        </Box>
     );
 };
 
