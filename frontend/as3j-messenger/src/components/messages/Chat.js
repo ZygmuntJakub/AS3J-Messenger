@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Box, Button, Grid, Text, TextArea} from "grommet";
+import {Avatar, Box, Button, Grid, Text, TextArea} from "grommet";
 import axios from "axios";
 import {backendUrl} from "../../utils/constants";
 import authHeader from "../../utils/authHeader";
 import {useAuth} from "../../context/context";
 import userInfo from "../../utils/userInfo";
-import {Send} from "grommet-icons";
+import {FormNext, FormPrevious, Send} from "grommet-icons";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
@@ -81,29 +81,56 @@ export const Chat = ({chat}) => {
                         {data.map((c) => (
                             <>
                                 {c.author !== userInfo().username ? (
-                                    <Box flex={false} basis={"80px"} animation={"fadeIn"} margin={"xsmall"} round
-                                         pad={"small"} background="light-3">
-                                        <Text>{c.content}</Text>
-                                        <Text size={"xsmall"}>{c.author}</Text>
-                                        <Text size={"xsmall"}>
-                                            {!c.timestamp.nano ?
-                                                new Date(c.timestamp).toDateString() :
-                                                c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
-                                            }
-                                        </Text>
+                                    <Box direction={"row"} flex={false} basis={"80px"} animation={"fadeIn"}
+                                         margin={"xsmall"} round
+                                         pad={"small"} background="light-3"
+                                         align={"center"}
+                                    >
+                                        <Box align={"center"}>
+                                            {c.avatar ? (
+                                                <Avatar size={"small"}
+                                                        src={`https://storage.cloud.google.com/as3j-messenger/${c.avatar}.png`}/>
+                                            ) : (
+                                                <Avatar size={"small"}
+                                                        src="https://innostudio.de/fileuploader/images/default-avatar.png"/>
+                                            )}
+                                            <Text size={"11px"}>{c.author}</Text>
+                                            <Text size={"11px"}>
+                                                {!c.timestamp.nano ?
+                                                    new Date(c.timestamp).toDateString() :
+                                                    c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
+                                                }
+                                            </Text>
+                                        </Box>
+                                        <FormNext />
+                                        <Box margin={{horizontal: "small"}}>
+                                            <Text>{c.content}</Text>
+                                        </Box>
                                     </Box>
                                 ) : (
-                                    <Box flex={false} basis={"80px"} animation={"fadeIn"} margin={"xsmall"} round
+                                    <Box direction={"row"} justify={"end"} flex={false} basis={"80px"} animation={"fadeIn"} margin={"xsmall"} round
                                          pad={"small"} background="brand"
-                                         align={"end"}>
-                                        <Text>{c.content}</Text>
-                                        <Text size={"xsmall"}>You</Text>
-                                        <Text size={"xsmall"}>
-                                            {!c.timestamp.nano ?
-                                                new Date(c.timestamp).toLocaleTimeString() :
-                                                c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
-                                            }
-                                        </Text>
+                                         align={"center"}>
+                                        <Box margin={{horizontal: "small"}}>
+                                            <Text>{c.content}</Text>
+                                        </Box>
+                                        <FormPrevious />
+                                        <Box align={"center"}>
+                                            {c.avatar ? (
+                                                <Avatar size={"small"}
+                                                        src={`https://storage.cloud.google.com/as3j-messenger/${c.avatar}.png`}/>
+                                            ) : (
+                                                <Avatar size={"small"}
+                                                        src="https://innostudio.de/fileuploader/images/default-avatar.png"/>
+                                            )}
+                                            <Text size={"11px"}>You</Text>
+                                            <Text size={"11px"}>
+                                                {!c.timestamp.nano ?
+                                                    new Date(c.timestamp).toLocaleTimeString() :
+                                                    c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
+                                                }
+                                            </Text>
+                                        </Box>
                                     </Box>
                                 )}
                             </>

@@ -10,6 +10,7 @@ import {useUser} from "../../context/context";
 const EditUser = () => {
     const [error, setError] = React.useState(false);
     const [username, setUsername] = React.useState({});
+    const [avatarUuid, setAvatarUuid] = React.useState('');
     const history = useHistory();
     const { setUser } = useUser();
 
@@ -18,8 +19,8 @@ const EditUser = () => {
         data.append('file', event.target.files[0])
         axios.post(`${backendUrl}/files/avatars`,
             data, {headers: {Authorization: authHeader()}})
-            .then(() => {
-                history.push("/messages");
+            .then((res) => {
+                setAvatarUuid(res.data.value);
             })
             .catch(e => {
                 alert(e);
@@ -28,7 +29,7 @@ const EditUser = () => {
 
     const onUsernameSubmitHandler = (data) => {
         axios.patch(`${backendUrl}/users`,
-            data, {headers: {Authorization: authHeader()}})
+            {...data, photoID: avatarUuid}, {headers: {Authorization: authHeader()}})
             .then((res) => {
                 setUser(res.data);
                 history.push("/messages");

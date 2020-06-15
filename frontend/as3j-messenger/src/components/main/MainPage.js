@@ -23,7 +23,11 @@ function MainPage() {
             <Sidebar width={"300px"} background="brand" height="100vh"
                      header={
                          <Box direction={"row"}>
-                             <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80"/>
+                             {userInfo().avatarPresent ? (
+                                 <Avatar src={`https://storage.cloud.google.com/as3j-messenger/${userInfo().uuid}.png`}/>
+                             ) : (
+                                 <Avatar src="https://innostudio.de/fileuploader/images/default-avatar.png"/>
+                             )}
                              <Text margin={"small"}>{userInfo().username}</Text>
                          </Box>
                      }
