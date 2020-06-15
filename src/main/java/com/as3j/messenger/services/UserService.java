@@ -14,7 +14,7 @@ public interface UserService {
 
     void update(User user);
 
-    List<User> getAll();
+    User create(User user) throws UserWithSuchEmailExistException;
 
-    void create(User user) throws UserWithSuchEmailExistException;
+    List<User> getAll();
 }
