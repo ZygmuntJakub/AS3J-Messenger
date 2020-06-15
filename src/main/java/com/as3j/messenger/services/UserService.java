@@ -14,7 +14,7 @@ public interface UserService {
 
     User getByEmail(String email) throws NoSuchUserException;
 
-    void update(User user);
+    User update(User user);
 
     void changePassword(User user, ChangePasswordDto changePasswordDto) throws WrongCurrentPasswordException;
     User create(User user) throws UserWithSuchEmailExistException;
