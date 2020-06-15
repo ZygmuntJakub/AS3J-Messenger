@@ -25,7 +25,7 @@ function ChatList() {
     }, [history,setAuthToken])
 
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${backendUrl}/ws`);
     const stompClient = Stomp.over(socket);
     stompClient.connect({}, frame => {
 

@@ -1,12 +1,13 @@
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import {backendUrl} from "../../utils/constants";
 
 export function enableWebSocketMessaging() {
     /*
     Content of this function should be cut and pasted to
     component representing chat window.
      */
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${backendUrl}/ws`);
     const stompClient = Stomp.over(socket);
     stompClient.connect({}, frame => {
 
