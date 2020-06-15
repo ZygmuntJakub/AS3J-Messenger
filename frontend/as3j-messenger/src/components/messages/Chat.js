@@ -19,7 +19,7 @@ export const Chat = ({chat}) => {
         }).catch(e => {
             history.push("/login")
         });
-    }, [chat])
+    }, [chat, history])
 
     return (
         <Grid
