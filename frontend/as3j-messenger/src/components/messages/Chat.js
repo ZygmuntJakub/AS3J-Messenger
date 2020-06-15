@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Grid} from "grommet";
+import {Box, Grid, InfiniteScroll, Text} from "grommet";
 import axios from "axios";
 import {backendUrl} from "../../utils/constants";
 import authHeader from "../../utils/authHeader";
@@ -19,7 +19,7 @@ export const Chat = ({chat}) => {
             setData(result.data)
             setAuthToken(result.headers.authorization);
         }).catch(e => {
-            history.push("/login")
+            alert(e);
         });
     }, [chat, history])
 
@@ -47,8 +47,10 @@ export const Chat = ({chat}) => {
                 { name: 'send', start: [0, 1], end: [0, 1] },
             ]}
         >
-            <Box round gridArea="messages" background="light-1">
-
+            <Box pad={"small"} overflow={"scroll"} round gridArea="messages" background="light-1">
+                {data && data.map((c) => (
+                    <Box>{c.content}</Box>
+                ))}
             </Box>
             <Box round gridArea="send" background="light-5" />
         </Grid>

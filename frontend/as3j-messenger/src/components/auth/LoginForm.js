@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Box, Heading, TextInput, Form, FormField, Button, Text} from "grommet";
 import {backendUrl} from "../../utils/constants";
-import {useAuth} from "../../context/context";
+import {useAuth, useUser} from "../../context/context";
 import axios from 'axios';
 import {Redirect} from "react-router";
 
@@ -11,12 +11,14 @@ function LoginForm() {
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
     const { setAuthToken } = useAuth();
+    const { setUser } = useUser();
 
     const login = () => {
         axios.post(`${backendUrl}/auth/login`, {
             ...data
         }).then(result => {
             if (result.status === 200) {
+                setUser(result.data);
                 setAuthToken(result.headers.authorization);
                 setLoggedIn(true);
             } else {
