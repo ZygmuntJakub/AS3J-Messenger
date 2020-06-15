@@ -4,6 +4,7 @@ import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
 import com.as3j.messenger.model.entities.User;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -14,4 +15,6 @@ public interface UserService {
     void update(User user);
 
     User create(User user) throws UserWithSuchEmailExistException;
+
+    List<User> getAll();
 }

@@ -4,6 +4,7 @@ import com.as3j.messenger.common.MyPasswordEncoder;
 import com.as3j.messenger.dto.AddUserDto;
 import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.events.RegistrationEvent;
+import com.as3j.messenger.dto.UserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
@@ -18,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("users")
@@ -47,6 +50,16 @@ public class UserController {
             fileService.updatePhoto(editUserDto.getPhotoID().get(), user.getUuid());
         }
         userService.update(user);
+    }
+
+    @GetMapping
+    @ResponseBody
+    public List<UserDto> getUsers(@AuthenticationPrincipal UserDetails userDetails) throws NoSuchUserException {
+        User user = userService.getByEmail(userDetails.getUsername());
+        return userService.getAll().stream()
+                .filter(user1 -> !user1.getEmail().equals(user.getEmail()))
+                .filter(user1 -> !user.getBlackList().contains(user1))
+                .map(UserDto::fromUserEntity).collect(Collectors.toList());
     }
 
     @PostMapping(consumes = "application/json")
