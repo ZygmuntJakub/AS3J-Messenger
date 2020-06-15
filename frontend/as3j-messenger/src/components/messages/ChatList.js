@@ -9,34 +9,32 @@ import {useAuth} from "../../context/context";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import Chat from "./Chat";
+import userInfo from "../../utils/userInfo";
 
 function ChatList() {
     const [data, setData] = React.useState([]);
     const [chat, setChat] = React.useState('');
     const {setAuthToken} = useAuth();
     const history = useHistory();
+    const socket = new SockJS(`${backendUrl}/ws`);
+    const stompClient = Stomp.over(socket);
 
     useEffect(() => {
         axios.get(`${backendUrl}/chats`, {headers: {Authorization: authHeader()}}).then(result => {
             setData(result.data)
             setAuthToken(result.headers.authorization);
+            stompClient.connect({}, frame => {
+                const currentUserUuid = userInfo().uuid;
+
+                stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {
+                    // Reaction for new chat arrival
+                    console.log(message);
+                });
+            });
         }).catch(e => {
             history.push("/login")
         });
     }, [history,setAuthToken]);
-
-    // const socket = new SockJS(`${backendUrl}/ws`);
-    // const stompClient = Stomp.over(socket);
-    // stompClient.connect({}, frame => {
-    //
-    //   // TODO should be current user's UUID
-    //   const currentUserUuid = "b5607d38-8fc1-43ef-b44e-34967083c80a";
-    //
-    //   stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {
-    //       // Reaction for new chat arrival
-    //       console.log(message);
-    //   });
-    // });
 
     return (
         <>

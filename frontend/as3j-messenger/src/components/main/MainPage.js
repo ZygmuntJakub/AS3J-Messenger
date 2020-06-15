@@ -18,7 +18,7 @@ function MainPage() {
 
     return (
         <Box direction={"row"} animation={"fadeIn"}>
-            <Sidebar width={"small"} background="brand" height="100vh"
+            <Sidebar width={"300px"} background="brand" height="100vh"
                      header={
                          <Box direction={"row"}>
                              <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80"/>

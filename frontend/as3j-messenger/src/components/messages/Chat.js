@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Box, Button, Grid, Text, TextArea, Main} from "grommet";
+import {Box, Button, Grid, Text, TextArea} from "grommet";
 import axios from "axios";
 import {backendUrl} from "../../utils/constants";
 import authHeader from "../../utils/authHeader";
 import {useAuth} from "../../context/context";
-import {useHistory} from "react-router-dom";
 import userInfo from "../../utils/userInfo";
 import {Send} from "grommet-icons";
 import SockJS from "sockjs-client";
@@ -15,24 +14,38 @@ export const Chat = ({chat}) => {
     const [data, setData] = useState([]);
     const [message, setMessage] = React.useState("");
     const {setAuthToken} = useAuth();
-    const history = useHistory();
     const messagesEndRef = useRef(null);
-
+    const socket = new SockJS(`${backendUrl}/ws`);
+    const stompClient = Stomp.over(socket);
     const scrollToBottom = () => {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current.scrollIntoView({behavior: "smooth"});
     };
+
+    const stompClientConnect = (messages) => {
+        stompClient.connect({}, frame => {
+            stompClient.subscribe(`/messages/add/${chat}`, message => {
+                messages.push(JSON.parse(message.body))
+                setData(() => [
+                    ...messages,
+                ])
+                console.log(JSON.parse(message.body))
+            });
+        });
+    }
 
     useEffect(() => {
         axios.get(`${backendUrl}/chats/${chat}`, {headers: {Authorization: authHeader()}}).then(result => {
-            setData(result.data)
             setAuthToken(result.headers.authorization);
+            setData(result.data);
+            stompClientConnect(result.data);
         }).catch(e => {
             alert(e);
         });
         scrollToBottom();
-    }, [chat, history])
 
-    useEffect(scrollToBottom, [data])
+    }, [chat, setAuthToken]);
+
+    useEffect(scrollToBottom, [data]);
 
     const handleSubmit = () => {
         axios.post(`${backendUrl}/chats/${chat}/messages`,
@@ -46,20 +59,6 @@ export const Chat = ({chat}) => {
         setMessage("");
     }
 
-    // const socket = new SockJS(`${backendUrl}/ws`);
-    // const stompClient = Stomp.over(socket);
-    // stompClient.connect({}, frame => {
-    //     const chatUuid = chat;
-    //
-    //     stompClient.subscribe(`/messages/add/${chatUuid}`, message => {
-    //         setData([
-    //             ...data,
-    //
-    //         ])
-    //         console.log(message.body)
-    //     });
-    //
-    // });
 
     return (
         <Grid
@@ -78,22 +77,34 @@ export const Chat = ({chat}) => {
                     {data.map((c) => (
                         <>
                             {c.author !== userInfo().username ? (
-                                <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round pad={"small"} background="light-3">
+                                <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
+                                     pad={"small"} background="light-3">
                                     <Text>{c.content}</Text>
                                     <Text size={"xsmall"}>{c.author}</Text>
-                                    <Text size={"xsmall"}>{new Date(c.timestamp).toDateString()}</Text>
+                                    <Text size={"xsmall"}>
+                                        {!c.timestamp.nano ?
+                                            new Date(c.timestamp).toLocaleTimeString() :
+                                            c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
+                                        }
+                                    </Text>
                                 </Box>
                             ) : (
-                                <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round pad={"small"} background="brand"
+                                <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
+                                     pad={"small"} background="brand"
                                      align={"end"}>
                                     <Text>{c.content}</Text>
                                     <Text size={"xsmall"}>You</Text>
-                                    <Text size={"xsmall"}>{new Date(c.timestamp).toDateString()}</Text>
+                                    <Text size={"xsmall"}>
+                                        {!c.timestamp.nano ?
+                                            new Date(c.timestamp).toLocaleTimeString() :
+                                            c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
+                                        }
+                                    </Text>
                                 </Box>
                             )}
                         </>
                     ))}
-                    <div ref={messagesEndRef} />
+                    <div ref={messagesEndRef}/>
                 </Box>
             )}
             <Box animation={"fadeIn"} margin={"medium"} gridArea="send" background="light-1">
@@ -105,6 +116,7 @@ export const Chat = ({chat}) => {
                     onChange={event => setMessage(event.target.value)}
                 />
                 <Button
+                    type={"submit"}
                     gap={"small"}
                     margin={"small"}
                     size={"medium"}
