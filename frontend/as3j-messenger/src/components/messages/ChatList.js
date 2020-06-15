@@ -6,12 +6,13 @@ import {backendUrl} from "../../utils/constants";
 import authHeader from "../../utils/authHeader";
 import {useHistory} from "react-router-dom";
 import {useAuth} from "../../context/context";
+import Chat from "./Chat";
 
 
 function ChatList() {
     const [data, setData] = React.useState([]);
     const [chat, setChat] = React.useState('');
-    const { setAuthToken } = useAuth();
+    const {setAuthToken} = useAuth();
     const history = useHistory();
 
     useEffect(() => {
@@ -21,33 +22,51 @@ function ChatList() {
         }).catch(e => {
             history.push("/login")
         });
-    }, [history,setAuthToken])
+    }, [history, setAuthToken])
 
     return (
-        <Table height="100vh">
-            <TableHeader>
-                <TableRow>
-                    <TableCell><Text color={"brand"}>Chats</Text></TableCell>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {data && data.map((chat) => {
-                    return (
-                        <TableRow key={chat.name}>
-                            <TableCell>
-                                <Button hoverIndicator={true} plain focusIndicator={false} color={"brand"} icon={<FormNext/>} secondary key={chat.name} label={
-                                    <Box pad={"medium"}>
-                                        <Text size={"small"}>{chat.name}</Text>
-                                        <Text size={"xsmall"}>{chat.lastMessage}</Text>
-                                        <Text size={"xsmall"}>{new Date(chat.timestamp).toDateString()}</Text>
-                                    </Box>}>
-                                </Button>
-                            </TableCell>
+        <>
+            <Box width={"medium"}>
+                <Table height="100vh">
+                    <TableHeader>
+                        <TableRow>
+                            <TableCell><Text color={"brand"}>Chats</Text></TableCell>
                         </TableRow>
-                    )
-                })}
-            </TableBody>
-        </Table>
+                    </TableHeader>
+                    <TableBody>
+                        {data && data.map((chat) => {
+                            return (
+                                <TableRow key={chat.name}>
+                                    <TableCell>
+                                        <Button
+                                            hoverIndicator={true}
+                                            plain
+                                            focusIndicator={false}
+                                            color={"brand"}
+                                            icon={<FormNext/>}
+                                            secondary
+                                            key={chat.name}
+                                            label={
+                                                <Box pad={"medium"}>
+                                                    <Text size={"small"}>{chat.name}</Text>
+                                                    <Text size={"xsmall"}>{chat.lastMessage}</Text>
+                                                    <Text
+                                                        size={"xsmall"}>{new Date(chat.timestamp).toDateString()}</Text>
+                                                </Box>}
+                                            onClick={() => setChat(chat.chatUuid)}
+                                        >
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
+            </Box>
+            <Box animation={"fadeIn"} height="100vh" width={"100%"} round background={'brand'}>
+                <Chat chat={chat} />
+            </Box>
+        </>
     );
 }
 
