@@ -25,12 +25,11 @@ function ChatList() {
         });
     }, [history,setAuthToken]);
 
-
     const socket = new SockJS(`${backendUrl}/ws`);
     const stompClient = Stomp.over(socket);
     stompClient.connect({}, frame => {
 
-      // Should be current user's UUID
+      // TODO should be current user's UUID
       const currentUserUuid = "b5607d38-8fc1-43ef-b44e-34967083c80a";
 
       stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {

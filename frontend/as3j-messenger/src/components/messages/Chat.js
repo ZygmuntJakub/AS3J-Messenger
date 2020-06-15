@@ -5,6 +5,8 @@ import {backendUrl} from "../../utils/constants";
 import authHeader from "../../utils/authHeader";
 import {useAuth} from "../../context/context";
 import {useHistory} from "react-router-dom";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 
 export const Chat = ({chat}) => {
@@ -20,6 +22,19 @@ export const Chat = ({chat}) => {
             history.push("/login")
         });
     }, [chat, history])
+
+    const socket = new SockJS(`${backendUrl}/ws`);
+    const stompClient = Stomp.over(socket);
+    stompClient.connect({}, frame => {
+
+        // TODO should be current chat's UUID
+        const chatUuid = "86acf316-9811-11ea-bb37-0242ac130002";
+
+        stompClient.subscribe(`/messages/add/${chatUuid}`, message => {
+            // Reaction for new message arrival
+            console.log(message);
+        });
+    });
 
     return (
         <Grid
