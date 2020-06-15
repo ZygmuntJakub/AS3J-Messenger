@@ -1,12 +1,13 @@
 package com.as3j.messenger.controllers;
 
-import com.as3j.messenger.common.MyPasswordEncoder;
-import com.as3j.messenger.dto.AddUserDto;
+import com.as3j.messenger.dto.ChangePasswordDto;
 import com.as3j.messenger.dto.EditUserDto;
 import com.as3j.messenger.events.RegistrationEvent;
 import com.as3j.messenger.dto.UserDto;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.exceptions.WrongCurrentPasswordException;
+import com.as3j.messenger.dto.AddUserDto;
 import com.as3j.messenger.exceptions.UserWithSuchEmailExistException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.FileService;
@@ -16,6 +17,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,15 +30,15 @@ public class UserController {
 
     private final UserService userService;
     private final FileService fileService;
-    private final MyPasswordEncoder encoder;
+    private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public UserController(UserService userService, FileService fileService, MyPasswordEncoder encoder,
+    public UserController(UserService userService, FileService fileService, PasswordEncoder passwordEncoder,
                           ApplicationEventPublisher applicationEventPublisher) {
         this.userService = userService;
         this.fileService = fileService;
-        this.encoder = encoder;
+        this.passwordEncoder = passwordEncoder;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -52,6 +54,15 @@ public class UserController {
         userService.update(user);
     }
 
+
+    @PatchMapping(path = "password")
+    public void changePassword(@RequestBody @Valid ChangePasswordDto changePasswordDto,
+                               @AuthenticationPrincipal UserDetails userDetails)
+            throws NoSuchUserException, WrongCurrentPasswordException {
+
+        User user = userService.getByEmail(userDetails.getUsername());
+        userService.changePassword(user, changePasswordDto);
+    }
     @GetMapping
     @ResponseBody
     public List<UserDto> getUsers(@AuthenticationPrincipal UserDetails userDetails) throws NoSuchUserException {
@@ -73,7 +84,7 @@ public class UserController {
         User user = new User();
         user.setEmail(addUserDto.getEmail());
         user.setUsername(addUserDto.getUsername());
-        user.setPassword(encoder.encode(addUserDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(addUserDto.getPassword()));
         return user;
     }
 }
