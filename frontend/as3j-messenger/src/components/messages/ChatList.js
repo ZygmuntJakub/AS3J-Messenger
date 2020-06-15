@@ -24,16 +24,16 @@ function ChatList() {
         });
     }, [history,setAuthToken])
 
-    // WebSocket
+
     const socket = new SockJS("http://localhost:8080/ws");
     const stompClient = Stomp.over(socket);
     stompClient.connect({}, frame => {
-      console.log("Connected");
 
-      // Docelowo do zmiany
+      // Should be current user's UUID
       const currentUserUuid = "b5607d38-8fc1-43ef-b44e-34967083c80a";
 
       stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {
+          // Reaction for new chat arrival
           console.log(message);
       });
     });
