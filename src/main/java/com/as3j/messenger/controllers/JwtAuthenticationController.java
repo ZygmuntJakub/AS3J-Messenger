@@ -4,6 +4,7 @@ package com.as3j.messenger.controllers;
 import com.as3j.messenger.authentication.JwtRequest;
 import com.as3j.messenger.authentication.JwtTokenUtil;
 import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,13 +36,12 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public void createAuthenticationToken(@RequestBody @Valid JwtRequest credentials, HttpServletResponse response)
-            throws NoSuchUserException {
+    public User createAuthenticationToken(@RequestBody @Valid JwtRequest credentials,
+                                          HttpServletResponse response) throws NoSuchUserException {
         Authentication authInfo = authenticate(credentials);
         final String token = jwtTokenUtil.generateToken(authInfo.getName());
         response.addHeader("Authorization", String.format("Bearer %s", token));
-        UUID uuid = userService.getByEmail(authInfo.getName()).getUuid();
-        response.addHeader("UUID", uuid.toString());
+        return userService.getByEmail(authInfo.getName());
     }
 
     private Authentication authenticate(JwtRequest credentials) {
