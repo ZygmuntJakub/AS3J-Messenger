@@ -53,12 +53,7 @@ public class UserController {
             throws NoSuchUserException, WrongCurrentPasswordException {
 
         User user = userService.getByEmail(userDetails.getUsername());
-        if (passwordEncoder.matches(changePasswordDto.getCurrentPassword(), user.getPassword()))
-            user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
-        else
-            throw new WrongCurrentPasswordException();
-
-        userService.update(user);
+        userService.changePassword(user, changePasswordDto);
     }
 
     @PostMapping(consumes = "application/json")
