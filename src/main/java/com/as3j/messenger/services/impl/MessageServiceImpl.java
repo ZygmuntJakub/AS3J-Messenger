@@ -43,6 +43,9 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.save(message);
 
+        chat.getMessages().add(message);
+        chatRepository.save(chat);
+
         String authorAvatar = message.getUser().getAvatarPresent() ? message.getUser().getUuid().toString() : null;
         return new MessageDto(content, message.getUser().getUsername(), authorAvatar, message.getTimestamp());
     }

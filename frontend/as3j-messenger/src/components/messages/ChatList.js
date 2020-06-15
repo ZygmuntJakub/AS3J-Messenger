@@ -25,18 +25,18 @@ function ChatList() {
         });
     }, [history,setAuthToken]);
 
-    const socket = new SockJS(`${backendUrl}/ws`);
-    const stompClient = Stomp.over(socket);
-    stompClient.connect({}, frame => {
-
-      // TODO should be current user's UUID
-      const currentUserUuid = "b5607d38-8fc1-43ef-b44e-34967083c80a";
-
-      stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {
-          // Reaction for new chat arrival
-          console.log(message);
-      });
-    });
+    // const socket = new SockJS(`${backendUrl}/ws`);
+    // const stompClient = Stomp.over(socket);
+    // stompClient.connect({}, frame => {
+    //
+    //   // TODO should be current user's UUID
+    //   const currentUserUuid = "b5607d38-8fc1-43ef-b44e-34967083c80a";
+    //
+    //   stompClient.subscribe(`/chats/add/${currentUserUuid}`, message => {
+    //       // Reaction for new chat arrival
+    //       console.log(message);
+    //   });
+    // });
 
     return (
         <>
@@ -77,8 +77,14 @@ function ChatList() {
                     </TableBody>
                 </Table>
             </Box>
-            <Box animation={"fadeIn"} height="100vh" width={"100%"} round background={'brand'}>
-                <Chat chat={chat} />
+            <Box overflow={"hidden"} animation={"fadeIn"} height="100vh" width={"100%"} background={'brand'}>
+                {chat ? (
+                    <Chat chat={chat} />
+                ) : (
+                    <Box fill align={"center"} justify={"center"} direction={"row"}>
+                        <Text size={"xxlarge"}>Select chat</Text>
+                    </Box>
+                )}
             </Box>
         </>
     );

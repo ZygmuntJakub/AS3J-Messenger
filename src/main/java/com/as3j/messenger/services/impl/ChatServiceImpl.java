@@ -69,7 +69,7 @@ public class ChatServiceImpl implements ChatService {
                 .map(c -> c.getMessages().stream()
                         .max(Comparator.comparing(Message::getTimestamp)).get())
                 .map(m -> new ChatDto(m.getChat().getName(), m.getChat().getUuid(), m.getContent(), m.getTimestamp()))
-                .sorted(Comparator.comparing(ChatDto::getTimestamp)).collect(Collectors.toList());
+                .sorted(Comparator.comparing(ChatDto::getTimestamp).reversed()).collect(Collectors.toList());
     }
 
     @Override
