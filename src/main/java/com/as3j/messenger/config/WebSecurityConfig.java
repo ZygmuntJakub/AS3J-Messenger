@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/login", "/v3/api-docs", "/files/avatars").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
+                .and().authorizeRequests().antMatchers("/h2-console/**", "/ws/**").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

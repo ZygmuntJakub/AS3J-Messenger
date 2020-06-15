@@ -14,6 +14,7 @@ import com.as3j.messenger.services.ChatService;
 import com.as3j.messenger.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -30,12 +31,14 @@ public class ChatControllerTest {
     private UserService userService;
     private UserDetailsImpl userDetails;
     private ChatService chatService;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @BeforeEach
     void setUp() {
         chatService = mock(ChatService.class);
         userService = mock(UserService.class);
-        chatController = new ChatController(chatService, userService);
+        simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+        chatController = new ChatController(chatService, userService, simpMessagingTemplate);
         userDetails = new UserDetailsImpl("", "");
     }
 
