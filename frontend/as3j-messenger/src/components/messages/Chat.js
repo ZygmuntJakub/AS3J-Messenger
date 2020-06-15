@@ -81,7 +81,7 @@ export const Chat = ({chat}) => {
                         {data.map((c) => (
                             <>
                                 {c.author !== userInfo().username ? (
-                                    <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
+                                    <Box flex={false} basis={"80px"} animation={"fadeIn"} margin={"xsmall"} round
                                          pad={"small"} background="light-3">
                                         <Text>{c.content}</Text>
                                         <Text size={"xsmall"}>{c.author}</Text>
@@ -93,7 +93,7 @@ export const Chat = ({chat}) => {
                                         </Text>
                                     </Box>
                                 ) : (
-                                    <Box flex={false} basis={"70px"} animation={"fadeIn"} margin={"xsmall"} round
+                                    <Box flex={false} basis={"80px"} animation={"fadeIn"} margin={"xsmall"} round
                                          pad={"small"} background="brand"
                                          align={"end"}>
                                         <Text>{c.content}</Text>
@@ -111,7 +111,7 @@ export const Chat = ({chat}) => {
                         <div ref={messagesEndRef}/>
                     </Box>
                 )}
-                <Box round pad={"small"} animation={"fadeIn"} margin={"medium"} gridArea="send" background="light-1">
+                <Box round pad={"small"} animation={"fadeIn"} margin={"xxsmall"} gridArea="send" background="light-1">
                     <TextArea
                         resize={false}
                         fill

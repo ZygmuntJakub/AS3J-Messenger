@@ -47,9 +47,9 @@ function ChatList() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data && data.map((chat) => {
+                        {data && data.map((c) => {
                             return (
-                                <TableRow key={chat.name}>
+                                <TableRow key={c.name}>
                                     <TableCell>
                                         <Button
                                             hoverIndicator={true}
@@ -58,19 +58,20 @@ function ChatList() {
                                             color={"brand"}
                                             icon={<FormNext/>}
                                             secondary
-                                            key={chat.name}
+                                            key={c.name}
                                             label={
                                                 <Box pad={"medium"}>
-                                                    <Text size={"small"}>{chat.name}</Text>
-                                                    <Text size={"xsmall"}>{chat.lastMessage}</Text>
+                                                    <Text size={"small"}>{c.name}</Text>
+                                                    <Text size={"xsmall"}>{c.lastMessage}</Text>
                                                     <Text
                                                         size={"xsmall"}>
-                                                        {chat.timestamp.nano ?
-                                                            chat.timestamp.hour + ":" + chat.timestamp.minute + ":" + chat.timestamp.second :
-                                                            new Date(chat.timestamp).toDateString()}
+                                                        {c.timestamp.nano ?
+                                                            c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second :
+                                                            new Date(c.timestamp).toDateString()}
                                                     </Text>
                                                 </Box>}
-                                            onClick={() => setChat(chat.chatUuid)}
+                                            onClick={() => setChat(c.chatUuid)}
+                                            active={chat === c.chatUuid}
                                         >
                                         </Button>
                                     </TableCell>
