@@ -7,6 +7,7 @@ import {Route, Switch, useHistory} from "react-router-dom";
 import EditUser from "../user/EditUser";
 import Users from "../user/Users";
 import NewChat from "../messages/NewChat";
+import userInfo from "../../utils/userInfo";
 
 function MainPage() {
     const {setAuthToken} = useAuth();
@@ -23,7 +24,7 @@ function MainPage() {
                      header={
                          <Box direction={"row"}>
                              <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80"/>
-                             <Text margin={"small"}>Hello</Text>
+                             <Text margin={"small"}>{userInfo().username}</Text>
                          </Box>
                      }
                      footer={
