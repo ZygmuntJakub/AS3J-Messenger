@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,6 +33,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        return users;
+    }
+
+    @Override
     public User getById(UUID id) throws NoSuchUserException {
         return userRepository.findById(id).orElseThrow(NoSuchUserException::new);
     }
@@ -41,12 +50,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(User user) throws UserWithSuchEmailExistException {
+    public User create(User user) throws UserWithSuchEmailExistException {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserWithSuchEmailExistException();
         }
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

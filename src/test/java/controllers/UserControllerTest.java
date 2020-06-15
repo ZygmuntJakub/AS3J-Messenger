@@ -5,6 +5,7 @@ import com.as3j.messenger.controllers.UserController;
 
 import com.as3j.messenger.dto.ChangePasswordDto;
 import com.as3j.messenger.dto.EditUserDto;
+import com.as3j.messenger.events.RegistrationEvent;
 import com.as3j.messenger.exceptions.NoSuchFileException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.exceptions.WrongCurrentPasswordException;
@@ -18,9 +19,7 @@ import com.as3j.messenger.services.FileService;
 import com.as3j.messenger.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
@@ -34,13 +33,15 @@ public class UserControllerTest {
     private UserController userController;
     private UserDetailsImpl userDetails;
     private PasswordEncoder passwordEncoder;
+    private ApplicationEventPublisher eventPublisher;
 
     @BeforeEach
     void setUp() {
         userService = mock(UserService.class);
         fileService = mock(FileService.class);
-        passwordEncoder = new BCryptPasswordEncoder(10);
-        userController = new UserController(userService, fileService, passwordEncoder);
+        passwordEncoder = mock(PasswordEncoder.class);
+        eventPublisher = mock(ApplicationEventPublisher.class);
+        userController = new UserController(userService, fileService, passwordEncoder, eventPublisher);
         userDetails = new UserDetailsImpl("", "");
     }
 
@@ -121,5 +122,6 @@ public class UserControllerTest {
         userController.registerUser(user);
         //then
         verify(userService, times(1)).create(any(User.class));
+        verify(eventPublisher, times(1)).publishEvent(any(RegistrationEvent.class));
     }
 }
