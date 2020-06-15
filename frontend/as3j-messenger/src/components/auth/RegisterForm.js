@@ -24,6 +24,7 @@ function RegisterForm() {
         }).catch(e => {
             setIsError(true);
         });
+        setData({});
     }
 
     return (
