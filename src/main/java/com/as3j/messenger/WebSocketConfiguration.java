@@ -20,7 +20,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                 .setAllowedOrigins("*")
                 .withSockJS()
                 .setClientLibraryUrl(sockJsLibraryUrl)
-                .setWebSocketEnabled(false)
+                .setWebSocketEnabled(true)
                 .setSessionCookieNeeded(false);
     }
 
