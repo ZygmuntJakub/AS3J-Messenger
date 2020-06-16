@@ -34,7 +34,11 @@ public class DetectLanguageServiceImpl implements DetectLanguageService {
                         .build();
 
         DetectLanguageResponse response = client.detectLanguage(request);
-        return response.getLanguagesList().stream().map(DetectedLanguage::getLanguageCode).findFirst().orElse("en");
+        return response.getLanguagesList()
+                .stream()
+                .map(DetectedLanguage::getLanguageCode)
+                .findFirst()
+                .orElse("en");
     }
 
 
