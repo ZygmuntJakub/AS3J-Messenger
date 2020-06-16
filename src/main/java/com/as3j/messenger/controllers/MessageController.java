@@ -7,6 +7,7 @@ import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.profanity_filter.ProfanityFilterService;
+import com.as3j.messenger.services.DetectLanguageService;
 import com.as3j.messenger.services.MessageService;
 import com.as3j.messenger.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,24 +30,28 @@ public class MessageController {
     private final MessageService messageService;
     private final UserService userService;
     private final SimpMessagingTemplate webSocket;
-    @Autowired
-    private ProfanityFilterService profanityFilterService;
+    private final ProfanityFilterService profanityFilterService;
+    private final DetectLanguageService detectLanguageService;
 
     @Autowired
-    public MessageController(MessageService messageService, UserService userService, SimpMessagingTemplate webSocket) {
+    public MessageController(MessageService messageService, UserService userService, SimpMessagingTemplate webSocket,
+                            ProfanityFilterService profanityFilterService, DetectLanguageService detectLanguageService) {
         this.messageService = messageService;
         this.userService = userService;
         this.webSocket = webSocket;
+        this.profanityFilterService = profanityFilterService;
+        this.detectLanguageService = detectLanguageService;
     }
 
     @PostMapping(consumes = "application/json")
     public void sendMessage(@PathVariable("id") UUID chatUuid,
                             @AuthenticationPrincipal UserDetails userDetails,
-                            @RequestBody @Valid SingleValueDto<String> content,
-                            Locale locale) throws NoSuchUserException, NoSuchChatException,
+                            @RequestBody @Valid SingleValueDto<String> content
+                            ) throws NoSuchUserException, NoSuchChatException,
             MessageAuthorIsNotMemberOfChatException, IOException {
         User author = userService.getByEmail(userDetails.getUsername());
-        String message = profanityFilterService.filterCurseWords(content.getValue(), locale.getLanguage());
+        String language = detectLanguageService.detect(content.getValue());
+        String message = profanityFilterService.filterCurseWords(content.getValue(), language);
         MessageDto sentMessage = messageService.sendMessage(chatUuid, author, message);
 
         String destination = "/messages/add/" + chatUuid.toString();
