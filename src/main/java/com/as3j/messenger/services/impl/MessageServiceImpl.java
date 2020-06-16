@@ -3,6 +3,8 @@ package com.as3j.messenger.services.impl;
 import com.as3j.messenger.dto.MessageDto;
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
+import com.as3j.messenger.exceptions.NoSuchMessageException;
+import com.as3j.messenger.exceptions.UserIsNotMemberOfChatException;
 import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;
@@ -41,13 +43,25 @@ public class MessageServiceImpl implements MessageService {
         message.setUser(author);
         message.setContent(content);
         message.setTimestamp();
-
         messageRepository.save(message);
 
         chat.getMessages().add(message);
         chatRepository.save(chat);
 
-        String authorAvatar = message.getUser().getAvatarPresent() ? message.getUser().getUuid().toString() : null;
-        return new MessageDto(content, message.getUser().getUsername(), authorAvatar, message.getTimestamp());
+        return new MessageDto(message);
+    }
+    
+    @Override
+    public MessageDto getMessage(UUID chatUuid, User user, Long id) throws NoSuchMessageException, UserIsNotMemberOfChatException {
+        Message message = messageRepository
+                .findById(id)
+                .orElseThrow(NoSuchMessageException::new);
+        if(!message.getChat().getUuid().equals(chatUuid)) {
+            throw new NoSuchMessageException();
+        }
+        if(!message.getChat().getUsers().contains(user)) {
+            throw new UserIsNotMemberOfChatException();
+        }
+        return new MessageDto(message);
     }
 }

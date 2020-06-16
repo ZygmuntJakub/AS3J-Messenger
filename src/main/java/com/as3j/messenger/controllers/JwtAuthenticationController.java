@@ -3,8 +3,8 @@ package com.as3j.messenger.controllers;
 
 import com.as3j.messenger.authentication.JwtRequest;
 import com.as3j.messenger.authentication.JwtTokenUtil;
+import com.as3j.messenger.dto.UserDto;
 import com.as3j.messenger.exceptions.NoSuchUserException;
-import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,12 +36,12 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public User createAuthenticationToken(@RequestBody @Valid JwtRequest credentials,
-                                          HttpServletResponse response) throws NoSuchUserException {
+    public UserDto createAuthenticationToken(@RequestBody @Valid JwtRequest credentials,
+                                             HttpServletResponse response) throws NoSuchUserException {
         Authentication authInfo = authenticate(credentials);
         final String token = jwtTokenUtil.generateToken(authInfo.getName());
         response.addHeader("Authorization", String.format("Bearer %s", token));
-        return userService.getByEmail(authInfo.getName());
+        return UserDto.fromUserEntity(userService.getByEmail(authInfo.getName()));
     }
 
     private Authentication authenticate(JwtRequest credentials) {
