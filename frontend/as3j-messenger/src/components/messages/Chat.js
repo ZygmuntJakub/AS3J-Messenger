@@ -126,7 +126,7 @@ export const Chat = ({chat}) => {
                                             <Text size={"11px"}>You</Text>
                                             <Text size={"11px"}>
                                                 {!c.timestamp.nano ?
-                                                    new Date(c.timestamp).toLocaleTimeString() :
+                                                    new Date(c.timestamp).toDateString() :
                                                     c.timestamp.hour + ":" + c.timestamp.minute + ":" + c.timestamp.second
                                                 }
                                             </Text>
