@@ -2,6 +2,7 @@ package services;
 
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
+import com.as3j.messenger.exceptions.NoSuchUserException;
 import com.as3j.messenger.model.entities.Chat;
 import com.as3j.messenger.model.entities.Message;
 import com.as3j.messenger.model.entities.User;

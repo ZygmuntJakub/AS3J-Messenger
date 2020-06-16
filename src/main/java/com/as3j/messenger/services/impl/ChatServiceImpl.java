@@ -36,7 +36,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void add(AddChatDto dto, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
+    public ChatDto add(AddChatDto dto, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
 
         Set<User> users = dto.getUsersUuid().stream()
                 .map(userRepository::findById)
@@ -58,6 +58,8 @@ public class ChatServiceImpl implements ChatService {
         chat.getMessages().add(message);
 
         chatRepository.save(chat);
+
+        return new ChatDto(chat.getName(), chat.getUuid(), message.getContent(), message.getTimestamp());
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ChatServiceImpl implements ChatService {
         return chats.stream()
                 .map(c -> c.getMessages().stream()
                         .max(Comparator.comparing(Message::getTimestamp)).get())
-                .map(m -> new ChatDto(m.getChat().getName(), m.getUser().getUuid(), m.getContent(), m.getTimestamp()))
+                .map(m -> new ChatDto(m.getChat().getName(), m.getChat().getUuid(), m.getContent(), m.getTimestamp()))
                 .sorted(Comparator.comparing(ChatDto::getTimestamp)).collect(Collectors.toList());
     }
 
@@ -75,9 +77,7 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatRepository.findById(id).orElseThrow(NoSuchChatException::new);
         if (!chat.getUsers().contains(user)) throw new MessageAuthorIsNotMemberOfChatException();
         return chat.getMessages().stream()
-                .map(c -> new MessageDto(c.getContent(), c.getUser().getUsername(),
-                        c.getUser().getAvatarPresent() ? c.getUser().getUuid().toString() : null,
-                        c.getTimestamp()))
+                .map(c -> new MessageDto(c))
                 .sorted(Comparator.comparing(MessageDto::getTimestamp))
                 .collect(Collectors.toList());
 

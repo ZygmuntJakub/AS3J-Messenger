@@ -84,6 +84,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-messaging</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -124,7 +128,11 @@
             <artifactId>mockito-inline</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.mailjet</groupId>
+            <artifactId>mailjet-client</artifactId>
+            <version>4.2.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
