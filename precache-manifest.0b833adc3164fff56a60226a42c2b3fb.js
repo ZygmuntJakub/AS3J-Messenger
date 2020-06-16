@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d43e949c84e41071446d6b96e637594d",
+    "revision": "50e6a65e8f6be5a7e349b14fd416d762",
     "url": "/AS3J-Messenger/index.html"
   },
   {
-    "revision": "bb1fade4ed383b79f981",
+    "revision": "773d4b40056ed5d84059",
     "url": "/AS3J-Messenger/static/css/main.5ecd60fb.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/AS3J-Messenger/static/js/2.9a0c8b3e.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "bb1fade4ed383b79f981",
-    "url": "/AS3J-Messenger/static/js/main.a81d9e68.chunk.js"
+    "revision": "773d4b40056ed5d84059",
+    "url": "/AS3J-Messenger/static/js/main.1c9ea75a.chunk.js"
   },
   {
     "revision": "401c47d9bc427c949624",
