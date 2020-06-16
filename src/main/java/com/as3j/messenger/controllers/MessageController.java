@@ -1,17 +1,17 @@
 package com.as3j.messenger.controllers;
 
+import com.as3j.messenger.common.LanguageCodes;
 import com.as3j.messenger.dto.MessageDto;
 import com.as3j.messenger.dto.SingleValueDto;
-import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
-import com.as3j.messenger.exceptions.NoSuchChatException;
-import com.as3j.messenger.exceptions.NoSuchUserException;
+import com.as3j.messenger.exceptions.*;
 import com.as3j.messenger.model.entities.User;
 import com.as3j.messenger.curse_filter.CurseFilter;
-import com.as3j.messenger.services.DetectLanguageService;
 import com.as3j.messenger.services.MessageService;
+import com.as3j.messenger.services.TranslationService;
 import com.as3j.messenger.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.gax.rpc.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,18 +28,20 @@ public class MessageController {
 
     private final MessageService messageService;
     private final UserService userService;
+    private final TranslationService translationService;
     private final SimpMessagingTemplate webSocket;
     private final CurseFilter curseFilter;
-    private final DetectLanguageService detectLanguageService;
-
     @Autowired
-    public MessageController(MessageService messageService, UserService userService, SimpMessagingTemplate webSocket,
-                             CurseFilter curseFilter, DetectLanguageService detectLanguageService) {
+    public MessageController(MessageService messageService,
+                UserService userService,
+                SimpMessagingTemplate webSocket,
+                CurseFilter curseFilter,
+                TranslationService translationService) {
         this.messageService = messageService;
         this.userService = userService;
+        this.translationService = translationService;
         this.webSocket = webSocket;
         this.curseFilter = curseFilter;
-        this.detectLanguageService = detectLanguageService;
     }
 
     @PostMapping(consumes = "application/json")
@@ -49,7 +51,7 @@ public class MessageController {
                             ) throws NoSuchUserException, NoSuchChatException,
             MessageAuthorIsNotMemberOfChatException, IOException {
         User author = userService.getByEmail(userDetails.getUsername());
-        String language = detectLanguageService.detect(content.getValue());
+        String language = translationService.detect(content.getValue());
         String message = curseFilter.filterCurseWords(content.getValue(), language);
         MessageDto sentMessage = messageService.sendMessage(chatUuid, author, message);
 
@@ -61,5 +63,26 @@ public class MessageController {
             e.printStackTrace();
         }
         webSocket.convertAndSend(destination, payload);
+    }
+
+    @GetMapping(path = "/{messageId}")
+    public MessageDto getTranslatedMessage(@PathVariable("id") UUID chatUuid,
+                                           @AuthenticationPrincipal UserDetails userDetails,
+                                           @PathVariable("messageId") Long messageId,
+                                           @RequestParam("lang") String language)
+            throws NoSuchUserException, NoSuchMessageException, UserIsNotMemberOfChatException,
+            IncorrectLanguageCode, LanguageNotSupportedException {
+        User requester = userService.getByEmail(userDetails.getUsername());
+        MessageDto messageDto = messageService.getMessage(chatUuid, requester, messageId);
+        if(!LanguageCodes.isValid(language)) {
+            throw new IncorrectLanguageCode();
+        }
+        try {
+            String translated = translationService.translate(messageDto.getContent(), language);
+            messageDto.setContent(translated);
+        } catch(InvalidArgumentException e) {
+            throw new LanguageNotSupportedException();
+        }
+        return messageDto;
     }
 }
