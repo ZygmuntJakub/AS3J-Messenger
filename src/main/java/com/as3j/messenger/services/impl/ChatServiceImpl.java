@@ -36,7 +36,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void add(AddChatDto dto, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
+    public ChatDto add(AddChatDto dto, String email) throws NoSuchUserException, ChatAuthorIsNotMemberOfChatException {
 
         Set<User> users = dto.getUsersUuid().stream()
                 .map(userRepository::findById)
@@ -58,6 +58,8 @@ public class ChatServiceImpl implements ChatService {
         chat.getMessages().add(message);
 
         chatRepository.save(chat);
+
+        return new ChatDto(chat.getName(), chat.getUuid(), message.getContent(), message.getTimestamp());
     }
 
     @Override
@@ -66,8 +68,8 @@ public class ChatServiceImpl implements ChatService {
         return chats.stream()
                 .map(c -> c.getMessages().stream()
                         .max(Comparator.comparing(Message::getTimestamp)).get())
-                .map(m -> new ChatDto(m.getChat().getName(), m.getUser().getUuid(), m.getContent(), m.getTimestamp()))
-                .sorted(Comparator.comparing(ChatDto::getTimestamp)).collect(Collectors.toList());
+                .map(m -> new ChatDto(m.getChat().getName(), m.getChat().getUuid(), m.getContent(), m.getTimestamp()))
+                .sorted(Comparator.comparing(ChatDto::getTimestamp).reversed()).collect(Collectors.toList());
     }
 
     @Override

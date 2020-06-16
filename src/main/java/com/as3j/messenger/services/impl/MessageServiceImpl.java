@@ -1,5 +1,6 @@
 package com.as3j.messenger.services.impl;
 
+import com.as3j.messenger.dto.MessageDto;
 import com.as3j.messenger.exceptions.MessageAuthorIsNotMemberOfChatException;
 import com.as3j.messenger.exceptions.NoSuchChatException;
 import com.as3j.messenger.model.entities.Chat;
@@ -26,7 +27,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(UUID chatUuid, User author, String content) throws NoSuchChatException,
+    public MessageDto sendMessage(UUID chatUuid, User author, String content) throws NoSuchChatException,
             MessageAuthorIsNotMemberOfChatException {
         Chat chat = chatRepository.findById(chatUuid)
                 .orElseThrow(NoSuchChatException::new);
@@ -39,7 +40,14 @@ public class MessageServiceImpl implements MessageService {
         message.setChat(chat);
         message.setUser(author);
         message.setContent(content);
+        message.setTimestamp();
 
         messageRepository.save(message);
+
+        chat.getMessages().add(message);
+        chatRepository.save(chat);
+
+        String authorAvatar = message.getUser().getAvatarPresent() ? message.getUser().getUuid().toString() : null;
+        return new MessageDto(content, message.getUser().getUsername(), authorAvatar, message.getTimestamp());
     }
 }
