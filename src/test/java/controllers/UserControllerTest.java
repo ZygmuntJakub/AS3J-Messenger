@@ -53,6 +53,7 @@ public class UserControllerTest {
         user.setUsername("test");
         user.setAvatarPresent(false);
         doReturn(user).when(userService).getByEmail(any(String.class));
+        doReturn(user).when(userService).update(any(User.class));
         //when
         userController.editUser(requestDto, userDetails);
         //then
@@ -71,6 +72,7 @@ public class UserControllerTest {
         user.setUsername("test");
         user.setAvatarPresent(false);
         doReturn(user).when(userService).getByEmail(any(String.class));
+        doReturn(user).when(userService).update(any(User.class));
         //when
         userController.editUser(requestDto, userDetails);
         //then
@@ -89,6 +91,7 @@ public class UserControllerTest {
         user.setUsername("test");
         user.setAvatarPresent(true);
         doReturn(user).when(userService).getByEmail(any(String.class));
+        doReturn(user).when(userService).update(any(User.class));
         //when
         userController.editUser(requestDto, userDetails);
         //then
@@ -105,6 +108,7 @@ public class UserControllerTest {
 
         ChangePasswordDto changePasswordDto = new ChangePasswordDto();
         doReturn(user).when(userService).getByEmail(any(String.class));
+        doReturn(user).when(userService).update(any(User.class));
         //when
         userController.changePassword(changePasswordDto, userDetails);
         //then

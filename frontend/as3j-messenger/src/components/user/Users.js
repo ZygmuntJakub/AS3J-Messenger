@@ -19,7 +19,7 @@ const Users = () => {
                 setUsers(result.data)
                 setAuthToken(result.headers.authorization);
             }).catch(e => {
-                history.push("/login")
+                alert(e);
             });
         }
 
@@ -38,7 +38,7 @@ const Users = () => {
 
         }, [history, setAuthToken])
         return (
-            <Box direction={"row"} pad={"small"} justify={"around"} fill>
+            <Box animation={"fadeIn"} direction={"row"} pad={"small"} justify={"around"} fill>
                 <Box width={"medium"}>
                     <Table height="100vh">
                         <TableHeader>
@@ -53,7 +53,6 @@ const Users = () => {
                                         <TableCell>
                                             <Box justify={"between"} direction={"row"} plain>
                                                 <Text size={"small"}>{user.username}</Text>
-                                                <Button size={"small"} label="start chat"/>
                                                 <Button
                                                     size={"small"}
                                                     label="block"

@@ -40,7 +40,6 @@ public class MessageServiceImplTest {
         chat = new Chat();
         chatMembers = new HashSet<>(Arrays.asList(author, new User("anotheruser1@mail.com"),
                 new User("anotheruser2@mail.com")));
-        chat.setUsers(chatMembers);
         chatUuid = UUID.randomUUID();
         message = "Hi";
     }
@@ -48,6 +47,9 @@ public class MessageServiceImplTest {
     @Test
     void shouldAddMessage() throws MessageAuthorIsNotMemberOfChatException, NoSuchChatException {
         // given
+        chat.setMessages(new HashSet<>());
+        chat.setUsers(chatMembers);
+        chat.setName("chat");
         doReturn(Optional.of(chat)).when(chatRepository).findById(any(UUID.class));
         // when
         messageService.sendMessage(chatUuid, author, message);

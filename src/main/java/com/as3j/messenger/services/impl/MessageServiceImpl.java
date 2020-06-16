@@ -42,11 +42,15 @@ public class MessageServiceImpl implements MessageService {
         message.setChat(chat);
         message.setUser(author);
         message.setContent(content);
-
+        message.setTimestamp();
         messageRepository.save(message);
+
+        chat.getMessages().add(message);
+        chatRepository.save(chat);
+
         return new MessageDto(message);
     }
-
+    
     @Override
     public MessageDto getMessage(UUID chatUuid, User user, Long id) throws NoSuchMessageException, UserIsNotMemberOfChatException {
         Message message = messageRepository

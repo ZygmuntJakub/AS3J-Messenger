@@ -43,15 +43,15 @@ public class UserController {
     }
 
     @PatchMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editUser(@RequestBody @Valid EditUserDto editUserDto,
+    @ResponseBody
+    public UserDto editUser(@RequestBody @Valid EditUserDto editUserDto,
                          @AuthenticationPrincipal UserDetails userDetails) throws NoSuchUserException, NoSuchFileException {
         User user = userService.getByEmail(userDetails.getUsername());
         editUserDto.patch(user);
         if (editUserDto.getPhotoID().isPresent()) {
             fileService.updatePhoto(editUserDto.getPhotoID().get(), user.getUuid());
         }
-        userService.update(user);
+        return UserDto.fromUserEntity(userService.update(user));
     }
 
 

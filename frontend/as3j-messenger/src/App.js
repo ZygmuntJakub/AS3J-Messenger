@@ -9,6 +9,7 @@ import {theme} from "./utils/styles";
 function App() {
     const existingToken = JSON.parse(localStorage.getItem("token"));
     const [authToken, setAuthToken] = useState(existingToken);
+    const [user, setUser] = useState(existingToken);
 
     const setToken = (data) => {
         data ? localStorage.setItem("token", JSON.stringify(data)) :
@@ -16,8 +17,14 @@ function App() {
         setAuthToken(data);
     }
 
+    const setUserState = (data) => {
+        data ? localStorage.setItem("user", JSON.stringify(data)) :
+            localStorage.clear();
+        setUser(data);
+    }
+
     return (
-        <AuthContext.Provider value={{authToken, setAuthToken: setToken}}>
+        <AuthContext.Provider value={{authToken, setAuthToken: setToken, user, setUser: setUserState}}>
             <Grommet plain theme={theme}>
                 <Router>
                     <Switch>
