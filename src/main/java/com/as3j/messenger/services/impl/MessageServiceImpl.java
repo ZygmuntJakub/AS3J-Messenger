@@ -40,6 +40,7 @@ public class MessageServiceImpl implements MessageService {
         message.setChat(chat);
         message.setUser(author);
         message.setContent(content);
+        message.setTimestamp();
 
         messageRepository.save(message);
 
