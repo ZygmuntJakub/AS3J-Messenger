@@ -12,7 +12,7 @@ function LoginPage() {
                 "position": "bottom",
                 "repeat": "no-repeat",
                 "size": "cover",
-                "image": "url(https://i.ibb.co/chw0gDP/447.jpg)"
+                "image": "url(https://i.ibb.co/fxR0kLt/bgc.jpg)"
             }
         }>
             <Box

@@ -24,6 +24,7 @@ function RegisterForm() {
         }).catch(e => {
             setIsError(true);
         });
+        setData({});
     }
 
     return (
@@ -48,7 +49,7 @@ function RegisterForm() {
                     <TextInput id="email" name="email"/>
                 </FormField>
                 <FormField name="password" htmlfor="password" label="password">
-                    <TextInput id="password" name="password"/>
+                    <TextInput type={"password"} id="password" name="password"/>
                 </FormField>
                 <Box direction="row" gap="medium">
                     <Button type="submit" primary label="Submit"/>
