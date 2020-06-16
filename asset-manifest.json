@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/AS3J-Messenger/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/AS3J-Messenger/static/js/main.a81d9e68.chunk.js",
+    "main.js.map": "/AS3J-Messenger/static/js/main.a81d9e68.chunk.js.map",
+    "runtime-main.js": "/AS3J-Messenger/static/js/runtime-main.c76401a5.js",
+    "runtime-main.js.map": "/AS3J-Messenger/static/js/runtime-main.c76401a5.js.map",
+    "static/js/2.9a0c8b3e.chunk.js": "/AS3J-Messenger/static/js/2.9a0c8b3e.chunk.js",
+    "static/js/2.9a0c8b3e.chunk.js.map": "/AS3J-Messenger/static/js/2.9a0c8b3e.chunk.js.map",
+    "index.html": "/AS3J-Messenger/index.html",
+    "precache-manifest.f52f3a1feb402fca71f313fa5f763c13.js": "/AS3J-Messenger/precache-manifest.f52f3a1feb402fca71f313fa5f763c13.js",
+    "service-worker.js": "/AS3J-Messenger/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/AS3J-Messenger/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.9a0c8b3e.chunk.js.LICENSE.txt": "/AS3J-Messenger/static/js/2.9a0c8b3e.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c76401a5.js",
+    "static/js/2.9a0c8b3e.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.a81d9e68.chunk.js"
+  ]
+}
