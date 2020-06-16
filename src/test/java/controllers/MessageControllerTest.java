@@ -5,16 +5,17 @@ import com.as3j.messenger.dto.MessageDto;
 import com.as3j.messenger.dto.SingleValueDto;
 import com.as3j.messenger.exceptions.*;
 import com.as3j.messenger.model.entities.User;
+import com.as3j.messenger.curse_filter.CurseFilter;
 import com.as3j.messenger.services.MessageService;
 import com.as3j.messenger.services.TranslationService;
 import com.as3j.messenger.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +29,7 @@ public class MessageControllerTest {
     private TranslationService translationService;
     private UserService userService;
     private SimpMessagingTemplate webSocket;
+    private CurseFilter curseFilter;
 
     private UserDetails userDetails;
 
@@ -44,7 +46,13 @@ public class MessageControllerTest {
         userDetails = mock(UserDetails.class);
         webSocket = mock(SimpMessagingTemplate.class);
         translationService = mock(TranslationService.class);
-        messageController = new MessageController(messageService, userService, translationService, webSocket);
+        curseFilter = mock(CurseFilter.class);
+        messageController = new MessageController(
+                messageService,
+                userService,
+                webSocket,
+                curseFilter,
+                translationService);
 
         author = new User("email@mail.com");
         chatUuid = UUID.randomUUID();
@@ -53,10 +61,12 @@ public class MessageControllerTest {
     }
 
     @Test
-    void shouldAddMessage() throws NoSuchUserException, MessageAuthorIsNotMemberOfChatException, NoSuchChatException {
+    void shouldAddMessage() throws NoSuchUserException, MessageAuthorIsNotMemberOfChatException, NoSuchChatException, IOException {
         // given
         doReturn(author.getEmail()).when(userDetails).getUsername();
         doReturn(author).when(userService).getByEmail(any(String.class));
+        doReturn("pl").when(translationService).detect(anyString());
+        doReturn(content.getValue()).when(curseFilter).filterCurseWords(anyString(), anyString());
         // when
         messageController.sendMessage(UUID.randomUUID(), userDetails, content);
         // then
@@ -74,10 +84,12 @@ public class MessageControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenChatIsNotFound() throws NoSuchChatException, NoSuchUserException, MessageAuthorIsNotMemberOfChatException {
+    void shouldThrowExceptionWhenChatIsNotFound() throws NoSuchChatException, NoSuchUserException, MessageAuthorIsNotMemberOfChatException, IOException {
         // given
         doReturn(author.getEmail()).when(userDetails).getUsername();
         doReturn(author).when(userService).getByEmail(any(String.class));
+        doReturn("pl").when(translationService).detect(anyString());
+        doReturn(content.getValue()).when(curseFilter).filterCurseWords(anyString(), anyString());
         doThrow(NoSuchChatException.class).when(messageService).sendMessage(any(UUID.class), any(User.class), any(String.class));
         // then
         assertThrows(NoSuchChatException.class, () -> messageController.sendMessage(chatUuid, userDetails, content));

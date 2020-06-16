@@ -5,6 +5,7 @@ import com.as3j.messenger.dto.MessageDto;
 import com.as3j.messenger.dto.SingleValueDto;
 import com.as3j.messenger.exceptions.*;
 import com.as3j.messenger.model.entities.User;
+import com.as3j.messenger.curse_filter.CurseFilter;
 import com.as3j.messenger.services.MessageService;
 import com.as3j.messenger.services.TranslationService;
 import com.as3j.messenger.services.UserService;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -28,23 +30,30 @@ public class MessageController {
     private final UserService userService;
     private final TranslationService translationService;
     private final SimpMessagingTemplate webSocket;
-
+    private final CurseFilter curseFilter;
     @Autowired
-    public MessageController(MessageService messageService, UserService userService,
-                             TranslationService translationService, SimpMessagingTemplate webSocket) {
+    public MessageController(MessageService messageService,
+                UserService userService,
+                SimpMessagingTemplate webSocket,
+                CurseFilter curseFilter,
+                TranslationService translationService) {
         this.messageService = messageService;
         this.userService = userService;
         this.translationService = translationService;
         this.webSocket = webSocket;
+        this.curseFilter = curseFilter;
     }
 
     @PostMapping(consumes = "application/json")
     public void sendMessage(@PathVariable("id") UUID chatUuid,
                             @AuthenticationPrincipal UserDetails userDetails,
-                            @RequestBody @Valid SingleValueDto<String> content) throws NoSuchUserException, NoSuchChatException,
-            MessageAuthorIsNotMemberOfChatException {
+                            @RequestBody @Valid SingleValueDto<String> content
+                            ) throws NoSuchUserException, NoSuchChatException,
+            MessageAuthorIsNotMemberOfChatException, IOException {
         User author = userService.getByEmail(userDetails.getUsername());
-        MessageDto sentMessage = messageService.sendMessage(chatUuid, author, content.getValue());
+        String language = translationService.detect(content.getValue());
+        String message = curseFilter.filterCurseWords(content.getValue(), language);
+        MessageDto sentMessage = messageService.sendMessage(chatUuid, author, message);
 
         String destination = "/messages/add/" + chatUuid.toString();
         String payload = null;

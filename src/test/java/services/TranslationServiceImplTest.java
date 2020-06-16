@@ -45,4 +45,23 @@ public class TranslationServiceImplTest {
         Assertions.assertEquals(expectedOutput, result.get(0));
     }
 
+    @Test
+    void shouldDetectLanguage() {
+        //given
+        String language = "pl";
+        var client = mock(TranslationServiceClient.class);
+        ReflectionTestUtils.setField(translationService, "client", client);
+        DetectedLanguage detectedLanguage = mock(DetectedLanguage.class);
+        DetectLanguageResponse detectLanguageResponse = mock(DetectLanguageResponse.class);
+        doReturn(language).when(detectedLanguage).getLanguageCode();
+        doReturn(Collections.singletonList(detectedLanguage)).when(detectLanguageResponse).getLanguagesList();
+        doReturn(detectLanguageResponse).when(client).detectLanguage(any(DetectLanguageRequest.class));
+        var text = "Tekst po polsku";
+        //when
+        var result = translationService.detect(text);
+        //then
+        verify(apiConfig, times(1)).getProjectId();
+        verify(client, times(1)).detectLanguage(any(DetectLanguageRequest.class));
+        Assertions.assertEquals(language, result);
+    }
 }

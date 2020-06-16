@@ -45,6 +45,24 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
+    public String detect(String text) {
+        LocationName parent = LocationName.of(apiConfig.getProjectId(), "global");
+        DetectLanguageRequest request =
+                DetectLanguageRequest.newBuilder()
+                        .setParent(parent.toString())
+                        .setMimeType("text/plain")
+                        .setContent(text)
+                        .build();
+
+        DetectLanguageResponse response = client.detectLanguage(request);
+        return response.getLanguagesList()
+                .stream()
+                .map(DetectedLanguage::getLanguageCode)
+                .findFirst()
+                .orElse("en");
+    }
+
+    @Override
     public String translate(String text, String language) {
         return translate(Collections.singletonList(text), language).get(0);
     }
